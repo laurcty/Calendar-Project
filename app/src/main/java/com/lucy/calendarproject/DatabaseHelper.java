@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "register.db";
-    public static final String TABLE_NAME = "registeruser";
+    public static final String TABLE_NAME = "users";
     public static final String COL_1 = "ID";
     public static final String COL_2 = "username";
     public static final String COL_3 = "password";
@@ -19,7 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("CREATE TABLE registeruser (ID INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)");
+        sqLiteDatabase.execSQL("CREATE TABLE users (ID INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)");
     }
 
 
@@ -34,7 +34,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put("username", user);
         contentValues.put("password", password);
-        long res = db.insert("registeruser", null, contentValues);
+        long res = db.insert("users", null, contentValues);
+        //db.execSQL(" ALTER TABLE " + TABLE_NAME + " RENAME TO "+ "users");
         db.close();
         return res;
     }
@@ -59,6 +60,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Integer deleteData(String id){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_NAME, "ID = ?", new String[] {id});
+    }
+
+    public void changeTableName(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(" ALTER TABLE " + TABLE_NAME + " RENAME TO "+ "users");
     }
 
 }

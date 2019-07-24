@@ -61,7 +61,7 @@ public class Login extends AppCompatActivity {
         mButtonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Integer deletedRows = db.deleteData("1");
+                Integer deletedRows = db.deleteData("2");
             }
         });
     }
