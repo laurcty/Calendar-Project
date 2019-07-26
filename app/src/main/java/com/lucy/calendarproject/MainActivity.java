@@ -27,6 +27,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //change to createGroup page when button clicked
+        Button createGroup = (Button) findViewById(R.id.createGroup);
+        createGroup.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CreateGroup.class));
+            }
+        });
+
+        //change to ViewCalendar page when button clicked
+        Button viewCalendar = (Button) findViewById(R.id.myCalendar);
+        viewCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ViewCalendar.class));
+            }
+        });
     }
 }
 

@@ -35,7 +35,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("username", user);
         contentValues.put("password", password);
         long res = db.insert("users", null, contentValues);
-        //db.execSQL(" ALTER TABLE " + TABLE_NAME + " RENAME TO "+ "users");
         db.close();
         return res;
     }
@@ -57,11 +56,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    //use this to delete records, call by taking button out of comments in login.xml
     public Integer deleteData(String id){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_NAME, "ID = ?", new String[] {id});
     }
 
+
+    //used 24/07 to change name from registeruser to users, keeping here just in case
     public void changeTableName(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(" ALTER TABLE " + TABLE_NAME + " RENAME TO "+ "users");

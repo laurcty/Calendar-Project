@@ -27,7 +27,7 @@ public class Login extends AppCompatActivity {
         mTextUsername = (EditText)findViewById(R.id.edittext_username);
         mTextPassword = (EditText)findViewById(R.id.edittext_password);
         mButtonLogin = (Button) findViewById(R.id.button_login);
-        mButtonDelete = (Button) findViewById(R.id.button_deleteData);
+        //mButtonDelete = (Button) findViewById(R.id.button_deleteData);
         mTextViewRegister = (TextView) findViewById(R.id.textview_register);
 
 
@@ -58,12 +58,14 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        /*
         mButtonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Integer deletedRows = db.deleteData("2");
             }
         });
+        */
     }
 
 
