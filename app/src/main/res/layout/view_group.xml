@@ -9,81 +9,89 @@
     tools:context=".ViewGroup">
 
 
-    <ImageView
-        android:id="@+id/homeImage"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        app:srcCompat="@drawable/logo" />
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Group ID"
+        android:id="@+id/GroupID"/>
 
 
         <HorizontalScrollView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
 
             <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="35dp"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="55dp"
-                android:text="name 1"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="20dp"
-                    android:text="name 2" />
+                android:layout_marginLeft="20dp"
+                android:background="#BC82C0A7"
+                android:text=" name 1 "/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:text="name 3"/>
+                android:layout_marginLeft="20dp"
+                android:background="#BC829BC0"
+                android:text=" name 2 " />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:text="name 4"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="20dp"
-                    android:text="name 5"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="20dp"
-                    android:text="name 6"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="20dp"
-                    android:text="name 7"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="20dp"
-                    android:text="name 8"/>
-
+                android:layout_marginLeft="20dp"
+                android:background="#BC9C82C0"
+                android:text=" name 3 "/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:background="#BCC082AB"
+                android:text=" name 4 "/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:background="#BCC08282"
+                android:text=" name 5 "/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:background="#BCC09B82"
+                android:text=" name 6 "/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:background="#BCC0BD82"
+                android:text=" name 7 "/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="#BC9CC082"
+                android:text=" name 8 "/>
             </LinearLayout>
         </HorizontalScrollView>
 
-    <CalendarView
-        android:layout_width="410dp"
-        android:layout_height="wrap_content"
-        android:paddingLeft="36dp" />
 
+    <CalendarView
+        android:layout_width="370dp"
+        android:layout_height="320dp" />
 
     <Button
         android:id="@+id/myCalendar"
         android:layout_width="100dp"
         android:layout_height="52dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginLeft="150dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="130dp"
+        android:layout_marginEnd="170dp"
         android:text="Find Date" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

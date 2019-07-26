@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class ViewGroup extends AppCompatActivity {
 
@@ -14,11 +16,10 @@ public class ViewGroup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_group);
 
-        ImageView img = (ImageView) findViewById(R.id.homeImage);
-        img.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startActivity(new Intent(ViewGroup.this, MainActivity.class));
-            }
-        });
+        //get the ID (corresponding to position in radioGroup) of the chosen group
+        String groupID = getIntent().getStringExtra("ID_OF_GROUP");
+        TextView groupIDText = (TextView) findViewById(R.id.GroupID);
+        groupIDText.setText("Group: " + groupID);
+
     }
 }

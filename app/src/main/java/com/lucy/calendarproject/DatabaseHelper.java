@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "register.db";
@@ -30,13 +31,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long addUser(String user, String password){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("username", user);
-        contentValues.put("password", password);
-        long res = db.insert("users", null, contentValues);
+        Boolean free = checkUserFree(user);
+        if (free) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("username", user);
+            contentValues.put("password", password);
+            long res = db.insert("users", null, contentValues);
+            db.close();
+            return res;
+        }else{
+            //error: user already exists
+            return 0;
+        }
+    }
+
+    public boolean checkUserFree(String username){
+        Boolean exists;
+        SQLiteDatabase db=this.getReadableDatabase();
+        Cursor cursor = db.query("users", new String[] { "ID"}, "username = ? ", new String[] {username}, null, null, null);
+        if (cursor.moveToFirst()) {
+            exists=false;
+        } else {
+            exists=true;
+        }
+
+        cursor.close();
         db.close();
-        return res;
+        return exists;
     }
 
     public boolean checkUser(String username, String password){
@@ -56,9 +78,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Integer getUserID(String username){
+        int userID;
+        SQLiteDatabase db=this.getReadableDatabase();
+        Cursor cursor = db.query("users", new String[] { "ID"}, "username = ? ", new String[] {username}, null, null, null);
+        if (cursor.moveToFirst()) {
+            userID = cursor.getInt(0);
+        } else {
+            //error - can't find user
+            userID = 0;
+        }
+
+        cursor.close();
+        db.close();
+        return userID;
+    }
+
     //use this to delete records, call by taking button out of comments in login.xml
     public Integer deleteData(String id){
         SQLiteDatabase db = this.getWritableDatabase();
+        db.close();
         return db.delete(TABLE_NAME, "ID = ?", new String[] {id});
     }
 
@@ -67,6 +106,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void changeTableName(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(" ALTER TABLE " + TABLE_NAME + " RENAME TO "+ "users");
+        db.close();
     }
 
 }

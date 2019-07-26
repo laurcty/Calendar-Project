@@ -51,6 +51,9 @@ public class Register extends AppCompatActivity {
                         Intent moveToLogin = new Intent(Register.this, Login.class);
                         startActivity(moveToLogin);
                     }
+                    else if(val==0){
+                        Toast.makeText(Register.this, "Username already exists", Toast.LENGTH_SHORT).show();
+                    }
                     else{
                         Toast.makeText(Register.this, "Registration error", Toast.LENGTH_SHORT).show();
                     }

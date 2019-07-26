@@ -8,11 +8,6 @@
     android:orientation="horizontal"
     tools:context=".CreateGroup">
 
-    <ImageView
-        android:id="@+id/homeImage"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        app:srcCompat="@drawable/logo" />
 
     <ScrollView
         android:layout_width="300dp"
@@ -40,7 +35,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="name 4"/>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
