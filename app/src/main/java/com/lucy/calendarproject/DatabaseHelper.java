@@ -10,6 +10,8 @@ import android.widget.Toast;
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "register.db";
     public static final String TABLE_NAME = "users";
+    public static final String TABLE_NAME2 = "groups";
+    public static final String TABLE_NAME3 = "userGroups";
     public static final String COL_1 = "ID";
     public static final String COL_2 = "username";
     public static final String COL_3 = "password";
@@ -21,12 +23,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE users (ID INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)");
+        sqLiteDatabase.execSQL("CREATE TABLE groups (groupID INTEGER PRIMARY KEY AUTOINCREMENT, groupName TEXT, noUsers INTEGER)");
+        sqLiteDatabase.execSQL("CREATE TABLE userGroups (userGroupID INTEGE PRIMARY KEY AUTOINCREMENT, userID TEXT, groupID TEXT)");
     }
 
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL(" DROP TABLE IF EXISTS " + TABLE_NAME);
+        sqLiteDatabase.execSQL(" DROP TABLE IF EXISTS " + TABLE_NAME2);
+        sqLiteDatabase.execSQL(" DROP TABLE IF EXISTS " + TABLE_NAME3);
         onCreate(sqLiteDatabase);
     }
 
@@ -44,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             //error: user already exists
             return 0;
         }
+
     }
 
     public boolean checkUserFree(String username){

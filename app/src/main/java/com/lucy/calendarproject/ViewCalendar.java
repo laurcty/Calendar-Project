@@ -12,6 +12,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import java.util.ArrayList;
@@ -30,39 +31,37 @@ public class ViewCalendar extends AppCompatActivity {
         setContentView(R.layout.view_calendar);
 
         //set up array list to store days to put dots under
-        List<CalendarDay> calendarDays = new ArrayList<>();
+        final List<CalendarDay> calendarDays = new ArrayList<>();
 
-        //remember that months index starts at 0 so minus one from each month
-        CalendarDay newDay = new CalendarDay(2019, 7-1, 18);
-        calendarDays.add(newDay);
-
-        //get id of calendarView and create new instance of EventDecorator
+        //get id of calendarView
         MaterialCalendarView calendar = (MaterialCalendarView) findViewById(R.id.calendarView);
-        calendar.addDecorator(new EventDecorator(Color.BLUE, calendarDays));
 
-        /*
-        CalendarView calendar = (CalendarView) findViewById(R.id.calender);
-        final TextView date_view = (TextView) findViewById(R.id.date_view);
 
-        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+        calendar.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
-            public void onSelectedDayChange(CalendarView calendarView, int i, int i1, int i2) {
+            public void onDateSelected(@NonNull MaterialCalendarView calendar, @NonNull CalendarDay date, boolean selected) {
                 // Store the value of date as a string
                 // Month indexes start at 0 so add one to it
+                final TextView date_view = (TextView) findViewById(R.id.date_view);
+                int day = date.getDay();
+                int month = date.getMonth();
+                int year = date.getYear();
 
-                int year=i;
-                int month=i1;
-                int day=i2;
+                String strDate = day + "-" + (month+1) + "-" + year ;
+                date_view.setText(strDate);
 
-                String Date
-                        = day + "-"
-                        + (month + 1) + "-" + year;
+                //add dot onto selected date
+                calendarDays.add(date);
+                calendar.addDecorator(new EventDecorator(Color.rgb(143, 209, 219), calendarDays));
 
-                    date_view.setText(Date);
-
+                /*remove dots if already selected
+                if(dot already exists on selected day){
+                       calendar.removeDecorators();
+                }
+                */
             }
         });
-        */
+
     }
 
 }

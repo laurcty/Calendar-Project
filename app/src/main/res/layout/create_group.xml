@@ -5,52 +5,114 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".CreateGroup">
 
-
-    <ScrollView
-        android:layout_width="300dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="100dp">
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_horizontal">
+            android:layout_height="35dp"
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name 1"/>
+                android:layout_marginLeft="20dp"
+                android:background="#BC82C0A7"
+                android:id="@+id/name1"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name 2"/>
+                android:layout_marginLeft="20dp"
+                android:background="#BC829BC0"
+                android:id="@+id/name2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name 3"/>
+                android:layout_marginLeft="20dp"
+                android:background="#BC9C82C0"
+                android:id="@+id/name3"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name 4"/>
+                android:layout_marginLeft="20dp"
+                android:background="#BCC082AB"
+                android:id="@+id/name4"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name 5"/>
+                android:layout_marginLeft="20dp"
+                android:background="#BCC08282"
+                android:id="@+id/name5"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name 6"/>
+                android:layout_marginLeft="20dp"
+                android:background="#BCC09B82"
+                android:id="@+id/name6"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name 7"/>
+                android:layout_marginLeft="20dp"
+                android:background="#BCC0BD82"
+                android:id="@+id/name7"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name 8"/>
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="#BC9CC082"
+                android:id="@+id/name8"/>
         </LinearLayout>
-    </ScrollView>
+    </HorizontalScrollView>
+
+
+    <LinearLayout
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="410dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/group_name"/>
+
+        <EditText
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/edittext_groupname"
+            android:layout_width="190dp"
+            android:layout_height="47dp"
+            android:layout_marginTop="20dp"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"/>
+
+
+    </LinearLayout>
+
+
+    <ListView
+        android:layout_gravity="center_horizontal"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="30dp"
+        android:id="@+id/userListView">
+    </ListView>
+
+
+    <Button
+        android:id="@+id/makeGroup"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="40dp"
+        android:layout_width="150dp"
+        android:layout_marginTop="40dp"
+        android:background="#41F3BDDC"
+        android:text="@string/create_group"
+        />
+
 </androidx.appcompat.widget.LinearLayoutCompat>
