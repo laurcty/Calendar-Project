@@ -3,6 +3,7 @@ package com.lucy.calendarproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
         final String strUserID = getIntent().getStringExtra("USER_ID");
         final int userID = Integer.parseInt(strUserID);
 
-        //todo make actual groups user belongs to appear here
 
         //database lookup to create arrayList with groups the user belongs to
         ArrayList<String> usersGroups = new ArrayList<String>();
@@ -46,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
             // Set text of new button
             radioButton.setText(groupName);
 
+            // todo make set colour work otherwise it's ugly green idk why this line does nothing
+            radioButton.setHighlightColor(Color.argb(90, 223, 112, 152));
+
             // Add radio button to group
             rg.addView(radioButton);
 
@@ -53,21 +56,19 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
         //change to viewGroup page when button clicked
         Button viewGroup = (Button) findViewById(R.id.viewGroup);
-        final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.myRadioGroup);
         viewGroup.setOnClickListener( new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                int groupID = radioGroup.getCheckedRadioButtonId();
-                if(groupID!=-1) {
+                int radioButtonId = rg.getCheckedRadioButtonId();
+                RadioButton rb = (RadioButton) findViewById(radioButtonId);
+                String groupName = rb.getText().toString();
 
-                    String strGroupID = Integer.toString(groupID);
-                    //Toast.makeText(MainActivity.this, Integer.toString(groupID), Toast.LENGTH_SHORT).show();
+                if(radioButtonId!=-1) {
                     Intent Intent = new Intent(MainActivity.this, ViewGroup.class);
-                    Intent.putExtra("ID_OF_GROUP", strGroupID);
+                    Intent.putExtra("NAME_OF_GROUP", groupName);
                     startActivity(Intent);
                 }else{
                     //error - no group selected

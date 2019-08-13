@@ -33,7 +33,6 @@ public class CreateGroup extends AppCompatActivity {
 
         //get userID of person logged in
         final String strUserID = getIntent().getStringExtra("USER_ID");
-        Toast.makeText(CreateGroup.this, strUserID, Toast.LENGTH_SHORT).show();
         final int userID = Integer.parseInt(strUserID);
 
         //find username from userID of person logged in

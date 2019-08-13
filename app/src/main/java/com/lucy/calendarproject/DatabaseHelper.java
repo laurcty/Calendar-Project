@@ -178,20 +178,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String strUserID = Integer.toString(userID);
         SQLiteDatabase db=this.getReadableDatabase();
         Cursor cursor = db.query("userGroups", new String[] { "groupID"}, "userID = ? ", new String[] {strUserID}, null, null, null);
-        if (cursor.moveToFirst()) {
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()) {
             int usersGroupID = cursor.getInt(0);
             String groupName = getGroupName(usersGroupID);
             usersGroups.add(groupName);
-        } else {
-            //error - can't find any groups with the user in
-
+            cursor.moveToNext();
         }
-
         cursor.close();
         db.close();
         return usersGroups;
     }
 
+    public ArrayList<String> getUsersInGroup(int groupID){
+        ArrayList<String> usersInGroup = new ArrayList<String>();
+        String strGroupID = Integer.toString(groupID);
+        SQLiteDatabase db=this.getReadableDatabase();
+        Cursor cursor = db.query("userGroups", new String[] { "userID"}, "groupID = ? ", new String[] {strGroupID}, null, null, null);
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()) {
+            int userID = cursor.getInt(0);
+            String username = getUsername(userID);
+            usersInGroup.add(username);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        return usersInGroup;
+    }
 
 
     //use this to delete records, call by taking button out of comments in login.xml
