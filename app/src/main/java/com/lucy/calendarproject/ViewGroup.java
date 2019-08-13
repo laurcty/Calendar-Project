@@ -21,5 +21,11 @@ public class ViewGroup extends AppCompatActivity {
         TextView groupIDText = (TextView) findViewById(R.id.GroupID);
         groupIDText.setText("Group: " + groupID);
 
+        //todo set names in scrollView at top to those in the group
+
+        //todo get calendars of people in group and decorate calendar
+
+        //todo make findDate button do smth idk go nuts
+
     }
 }

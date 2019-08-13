@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class CreateGroup extends AppCompatActivity {
     ArrayList<String> users=new ArrayList<String>();
-    int userAddedCounter =0;
+    int userAddedCounter =1;
     ArrayList<String> addedUsers=new ArrayList<String>();
 
 
@@ -30,7 +31,16 @@ public class CreateGroup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_group);
 
-        openAndQueryDatabase();
+        //get userID of person logged in
+        final String strUserID = getIntent().getStringExtra("USER_ID");
+        Toast.makeText(CreateGroup.this, strUserID, Toast.LENGTH_SHORT).show();
+        final int userID = Integer.parseInt(strUserID);
+
+        //find username from userID of person logged in
+        DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
+        final String username = dbHelper.getUsername(userID);
+
+        openAndQueryDatabase(username);
         displayResultList();
 
         final TextView name1 = (TextView) findViewById(R.id.name1);
@@ -42,6 +52,9 @@ public class CreateGroup extends AppCompatActivity {
         final TextView name7 = (TextView) findViewById(R.id.name7);
         final TextView name8 = (TextView) findViewById(R.id.name8);
 
+        //first add user who is logged in
+        name1.setText(" " + username + " ");
+        addedUsers.add(username);
 
         final ListView listView = (ListView) findViewById(R.id.userListView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -53,11 +66,11 @@ public class CreateGroup extends AppCompatActivity {
 
                 //validate to ensure same user only added to group once
                 if(!addedUsers.contains(selectedUser)) {
+
                     addedUsers.add(selectedUser);
-                    //Toast.makeText(CreateGroup.this, selectedUser, Toast.LENGTH_SHORT).show();
                     userAddedCounter++;
                     if (userAddedCounter == 1) {
-                        name1.setText(" " + selectedUser + " ");        //should make this one user who is logged in so that they will always be first in group
+                        //do nothing because first user has already been added
                     } else if (userAddedCounter == 2) {
                         name2.setText(" " + selectedUser + " ");
                     } else if (userAddedCounter == 3) {
@@ -73,12 +86,13 @@ public class CreateGroup extends AppCompatActivity {
                     } else if (userAddedCounter == 8) {
                         name8.setText(" " + selectedUser + " ");
                     } else {
-                        Toast.makeText(CreateGroup.this, "Maximim of 8 users can be added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateGroup.this, "Maximum of 8 users can be added", Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     Toast.makeText(CreateGroup.this, "User cannot be added twice", Toast.LENGTH_SHORT).show();
                 }
 
+                //todo make it so that you can take a user out of the group when you click it in the scrollview at the top
 
             }
         });
@@ -87,19 +101,39 @@ public class CreateGroup extends AppCompatActivity {
         createGroupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //use addedUsers arrayList to put all users into group
+                //create group in groups table
+                DatabaseHelper db = new DatabaseHelper(CreateGroup.this);
+                EditText groupName = (EditText)findViewById(R.id.edittext_groupname);
+                String strGroupName = groupName.getText().toString().trim();
+                db.addGroup(strGroupName, addedUsers.size());
+
+                //get ID of group that has been just created (since it is set as an autoincrement field in userGroups table)
+                int createdGroupID= db.getGroupID(strGroupName);
 
 
+                String addedUserName;
+                int addedUserID=0;
+                for (int i=0;i<addedUsers.size();i++){
+                    addedUserName = addedUsers.get(i);
+                    addedUserID = db.getUserID(addedUserName);
+                    db.addUserGroupLink(addedUserID, createdGroupID);
+                }
+
+                //switch back to main activity
+                Intent Intent = new Intent(CreateGroup.this, MainActivity.class);
+                Intent.putExtra("USER_ID", strUserID);
+                startActivity(Intent);
             }
         });
 
-
     }
 
-    private void openAndQueryDatabase() {
+    private void openAndQueryDatabase(String username) {
         try {
             DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
             SQLiteDatabase newDB = dbHelper.getWritableDatabase();
+
+
             Cursor c = newDB.rawQuery("SELECT username FROM " +
                     "users" +
                     " where ID>0", null);
@@ -108,8 +142,11 @@ public class CreateGroup extends AppCompatActivity {
                 if  (c.moveToFirst()) {
                     do {
                         String user = c.getString(c.getColumnIndex("username"));
-                        users.add(user);
                         //don't add user if user = username of person logged in
+                        if(!user.equals(username)){
+                            users.add(user);
+                        }
+
                     }while (c.moveToNext());
                 }
             }

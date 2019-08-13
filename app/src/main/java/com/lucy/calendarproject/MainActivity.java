@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,9 +20,39 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //get userID
-        String strUserID = getIntent().getStringExtra("USER_ID");
-        //Toast.makeText(MainActivity.this, strUserID, Toast.LENGTH_SHORT).show();
-        int userID = Integer.parseInt(strUserID);
+        final String strUserID = getIntent().getStringExtra("USER_ID");
+        final int userID = Integer.parseInt(strUserID);
+
+        //todo make actual groups user belongs to appear here
+
+        //database lookup to create arrayList with groups the user belongs to
+        ArrayList<String> usersGroups = new ArrayList<String>();
+        DatabaseHelper db = new DatabaseHelper(MainActivity.this);
+        usersGroups= db.getGroupsOfCurrentUser(userID);
+
+
+        //get id of radio group
+        final RadioGroup rg = (RadioGroup) findViewById(R.id.myRadioGroup);
+
+        //populate radio group with groups by looping over ArrayList usersGroups
+        for(int i=0;i<usersGroups.size();i++){
+
+            // Get name of group to add
+            String groupName = usersGroups.get(i);
+
+            // Initialize a new RadioButton
+            RadioButton radioButton = new RadioButton(getApplicationContext());
+
+            // Set text of new button
+            radioButton.setText(groupName);
+
+            // Add radio button to group
+            rg.addView(radioButton);
+
+        }
+
+
+
 
         //change to viewGroup page when button clicked
         Button viewGroup = (Button) findViewById(R.id.viewGroup);
@@ -49,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, CreateGroup.class));
+                Intent Intent = new Intent(MainActivity.this, CreateGroup.class);
+                Intent.putExtra("USER_ID", strUserID);
+                startActivity(Intent);
             }
         });
 
@@ -61,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ViewCalendar.class));
             }
         });
+
+
     }
 }
 

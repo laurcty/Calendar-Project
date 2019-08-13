@@ -63,6 +63,9 @@ public class Login extends AppCompatActivity {
             }
         });
 
+
+        //uncomment this when you want to use a button to delete records in user table
+
         /*
         mButtonDelete.setOnClickListener(new View.OnClickListener() {
             @Override

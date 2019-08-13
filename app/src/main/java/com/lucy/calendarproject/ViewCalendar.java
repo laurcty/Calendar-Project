@@ -54,6 +54,7 @@ public class ViewCalendar extends AppCompatActivity {
                 calendarDays.add(date);
                 calendar.addDecorator(new EventDecorator(Color.rgb(143, 209, 219), calendarDays));
 
+                //todo remove dots from own calendar when selected
                 /*remove dots if already selected
                 if(dot already exists on selected day){
                        calendar.removeDecorators();
@@ -62,6 +63,9 @@ public class ViewCalendar extends AppCompatActivity {
             }
         });
 
+
+        //todo add button for saving changes to calendar i.e. update database
+        //todo oh also make a new database table to store dates of when users are free idk how that's gonna happen but ok
     }
 
 }

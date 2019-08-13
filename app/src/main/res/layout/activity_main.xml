@@ -29,49 +29,49 @@
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:layout_marginStart="20dp"
-                    android:text="group 1" />
+                    android:id="@+id/group1"/>
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:layout_marginStart="20dp"
-                    android:text="group 2" />
+                    android:id="@+id/group2"/>
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:layout_marginStart="20dp"
-                    android:text="group 3" />
+                    android:id="@+id/group3"/>
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:layout_marginStart="20dp"
-                    android:text="group 4" />
+                    android:id="@+id/group4"/>
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:layout_marginStart="20dp"
-                    android:text="group 5" />
+                    android:id="@+id/group5"/>
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:layout_marginStart="20dp"
-                    android:text="group 6" />
+                    android:id="@+id/group6"/>
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:layout_marginStart="20dp"
-                    android:text="group 7" />
+                    android:id="@+id/group7"/>
             </RadioGroup>
             </ScrollView>
         </LinearLayout>
