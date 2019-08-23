@@ -61,6 +61,8 @@ public class ViewGroup extends AppCompatActivity {
             }
         }
 
+
+        // Get calendar of every member of group
         //todo get calendars of people in group and decorate calendar
 
         //todo make findDate button do smth idk go nuts

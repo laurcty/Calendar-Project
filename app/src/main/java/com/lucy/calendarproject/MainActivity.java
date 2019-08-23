@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -64,16 +65,23 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int radioButtonId = rg.getCheckedRadioButtonId();
                 RadioButton rb = (RadioButton) findViewById(radioButtonId);
-                String groupName = rb.getText().toString();
 
-                if(radioButtonId!=-1) {
-                    Intent Intent = new Intent(MainActivity.this, ViewGroup.class);
-                    Intent.putExtra("NAME_OF_GROUP", groupName);
-                    startActivity(Intent);
-                }else{
-                    //error - no group selected
+                try {
+                    String groupName = rb.getText().toString();
+                    if(radioButtonId!=-1) {
+                        Intent Intent = new Intent(MainActivity.this, ViewGroup.class);
+                        Intent.putExtra("NAME_OF_GROUP", groupName);
+                        startActivity(Intent);
+                    }else{
+                        //error - no group selected
+                        Toast.makeText(MainActivity.this, "No group selected", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e){
+                    //goes in here if rb content is null
                     Toast.makeText(MainActivity.this, "No group selected", Toast.LENGTH_SHORT).show();
                 }
+
+
             }
         });
 
@@ -92,12 +100,14 @@ public class MainActivity extends AppCompatActivity {
         //change to ViewCalendar page when button clicked
         Button viewCalendar = (Button) findViewById(R.id.myCalendar);
         viewCalendar.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, ViewCalendar.class));
+                Intent Intent = new Intent(MainActivity.this, ViewCalendar.class);
+                Intent.putExtra("USER_ID", strUserID);
+                startActivity(Intent);
             }
         });
-
 
     }
 }

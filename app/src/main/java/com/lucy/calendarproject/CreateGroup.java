@@ -65,25 +65,30 @@ public class CreateGroup extends AppCompatActivity {
 
                 //validate to ensure same user only added to group once
                 if(!addedUsers.contains(selectedUser)) {
-
-                    addedUsers.add(selectedUser);
                     userAddedCounter++;
                     if (userAddedCounter == 1) {
                         //do nothing because first user has already been added
                     } else if (userAddedCounter == 2) {
                         name2.setText(" " + selectedUser + " ");
+                        addedUsers.add(selectedUser);
                     } else if (userAddedCounter == 3) {
                         name3.setText(" " + selectedUser + " ");
+                        addedUsers.add(selectedUser);
                     } else if (userAddedCounter == 4) {
                         name4.setText(" " + selectedUser + " ");
+                        addedUsers.add(selectedUser);
                     } else if (userAddedCounter == 5) {
                         name5.setText(" " + selectedUser + " ");
+                        addedUsers.add(selectedUser);
                     } else if (userAddedCounter == 6) {
                         name6.setText(" " + selectedUser + " ");
+                        addedUsers.add(selectedUser);
                     } else if (userAddedCounter == 7) {
                         name7.setText(" " + selectedUser + " ");
+                        addedUsers.add(selectedUser);
                     } else if (userAddedCounter == 8) {
                         name8.setText(" " + selectedUser + " ");
+                        addedUsers.add(selectedUser);
                     } else {
                         Toast.makeText(CreateGroup.this, "Maximum of 8 users can be added", Toast.LENGTH_SHORT).show();
                     }
@@ -104,24 +109,33 @@ public class CreateGroup extends AppCompatActivity {
                 DatabaseHelper db = new DatabaseHelper(CreateGroup.this);
                 EditText groupName = (EditText)findViewById(R.id.edittext_groupname);
                 String strGroupName = groupName.getText().toString().trim();
-                db.addGroup(strGroupName, addedUsers.size());
+                Boolean free = db.checkGroupFree(strGroupName);
 
-                //get ID of group that has been just created (since it is set as an autoincrement field in userGroups table)
-                int createdGroupID= db.getGroupID(strGroupName);
+                if(!strGroupName.equals("") && addedUsers.size()>=2 && free) {
+                    db.addGroup(strGroupName, addedUsers.size());
 
+                    //get ID of group that has been just created (since it is set as an autoincrement field in userGroups table)
+                    int createdGroupID = db.getGroupID(strGroupName);
 
-                String addedUserName;
-                int addedUserID=0;
-                for (int i=0;i<addedUsers.size();i++){
-                    addedUserName = addedUsers.get(i);
-                    addedUserID = db.getUserID(addedUserName);
-                    db.addUserGroupLink(addedUserID, createdGroupID);
+                    String addedUserName;
+                    int addedUserID = 0;
+                    for (int i = 0; i < addedUsers.size(); i++) {
+                        addedUserName = addedUsers.get(i);
+                        addedUserID = db.getUserID(addedUserName);
+                        db.addUserGroupLink(addedUserID, createdGroupID);
+                    }
+
+                    //switch back to main activity
+                    Intent Intent = new Intent(CreateGroup.this, MainActivity.class);
+                    Intent.putExtra("USER_ID", strUserID);
+                    startActivity(Intent);
+                }else if(strGroupName.equals("")){
+                    Toast.makeText(CreateGroup.this, "Please enter a group name", Toast.LENGTH_SHORT).show();
+                }else if(!free){
+                    Toast.makeText(CreateGroup.this, "Group name is taken", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(CreateGroup.this, "Group cannot have only one user", Toast.LENGTH_SHORT).show();
                 }
-
-                //switch back to main activity
-                Intent Intent = new Intent(CreateGroup.this, MainActivity.class);
-                Intent.putExtra("USER_ID", strUserID);
-                startActivity(Intent);
             }
         });
 

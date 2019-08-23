@@ -50,7 +50,6 @@ public class Login extends AppCompatActivity {
                 if (res == true){
                     int userID = db.getUserID(user);
                     String strUserID = Integer.toString(userID);
-                    //Toast.makeText(Login.this, "User ID is: "+userID, Toast.LENGTH_SHORT).show();
                     Toast.makeText(Login.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
                     Intent Intent = new Intent(Login.this, MainActivity.class);
                     Intent.putExtra("USER_ID", strUserID);

@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("CREATE TABLE users (ID INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)");
+        sqLiteDatabase.execSQL("CREATE TABLE users (ID INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, calendarDates TEXT)");
         sqLiteDatabase.execSQL("CREATE TABLE groups (groupID INTEGER PRIMARY KEY AUTOINCREMENT, groupName TEXT, noUsers INTEGER)");
         sqLiteDatabase.execSQL("CREATE TABLE userGroups (userGroupID INTEGER PRIMARY KEY AUTOINCREMENT, userID TEXT, groupID TEXT)");
     }
@@ -49,10 +49,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.close();
             return res;
         }else{
-            //error: user already exists
+            // Error: user already exists
             return 0;
         }
-
     }
 
     public long addGroup(String groupName, int noUsers){
@@ -75,6 +74,105 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public void addDate(int userID, String dateToAdd){
+
+        // Get the current dates the user has in their calendar
+        String currentDates;
+        String newDates;
+        String strUserID = Integer.toString(userID);
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query("users", new String[] { "calendarDates"}, "ID = ? ", new String[] {strUserID}, null, null, null);
+        if (cursor.moveToFirst()) {
+            try{
+                currentDates = cursor.getString(0);
+            }catch(Exception e){
+                // User has no dates yet so currentDates is set here to blank string
+                currentDates = "";
+            }
+
+            // Now append new date to currentDates separated with a comma and update table
+            if(currentDates==null){
+                currentDates = "";
+            }
+
+            if(currentDates.equals("")){
+                newDates = dateToAdd;
+            }else{
+                newDates = currentDates+","+dateToAdd;
+            }
+
+            ContentValues cv = new ContentValues();
+            cv.put("calendarDates",newDates);
+            db.update(TABLE_NAME, cv, "ID = ?", new String[]{strUserID});
+
+
+        } else {
+            // Error - can't find user
+        }
+
+        cursor.close();
+        db.close();
+    }
+
+    public void removeDate(int userID, String dateToRemove){
+
+        // Get the current dates the user has in their calendar
+        String currentDates;
+        String newDates="";
+        String strUserID = Integer.toString(userID);
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query("users", new String[] { "calendarDates"}, "ID = ? ", new String[] {strUserID}, null, null, null);
+        if (cursor.moveToFirst()) {
+            try{
+                currentDates = cursor.getString(0);
+            }catch(Exception e){
+                // User has no dates yet so currentDates is set here to blank string
+                currentDates = "";
+            }
+
+            if(currentDates.contains(dateToRemove)){
+                // Need to find index of where data appears so that the comma before it can be deleted also
+                int dateIndex = currentDates.indexOf(dateToRemove);
+
+                if(dateIndex==0){
+                    // Date to remove is first in string
+
+                    try {
+                        if (currentDates.charAt(dateToRemove.length()) == ',') {
+                            String removedComma = new StringBuilder(currentDates).deleteCharAt(dateToRemove.length()).toString();
+                            newDates = removedComma.replace(dateToRemove, "");
+                        }
+                    }catch(Exception e){
+                        // Date is the only one in calendar so there is no comma to remove
+                        newDates = currentDates.replace(dateToRemove, "");
+                    }
+
+
+                }else {
+                    String removedComma = new StringBuilder(currentDates).deleteCharAt(dateIndex - 1).toString();
+                    newDates = removedComma.replace(dateToRemove, "");
+                }
+
+
+            }else{
+                // Data remains unchanged
+                newDates = currentDates;
+            }
+
+
+            ContentValues cv = new ContentValues();
+            cv.put("calendarDates",newDates);
+            db.update(TABLE_NAME, cv, "ID = ?", new String[]{strUserID});
+
+
+        } else {
+            // Error - can't find user
+        }
+
+        cursor.close();
+        db.close();
+    }
+
     public boolean checkUserFree(String username){
         Boolean exists;
         SQLiteDatabase db=this.getReadableDatabase();
@@ -84,7 +182,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else {
             exists=true;
         }
+        cursor.close();
+        db.close();
+        return exists;
+    }
 
+    public boolean checkGroupFree(String groupName){
+        Boolean exists;
+        SQLiteDatabase db=this.getReadableDatabase();
+        Cursor cursor = db.query("groups", new String[] { "groupID"}, "groupName = ? ", new String[] {groupName}, null, null, null);
+        if (cursor.moveToFirst()) {
+            exists=false;
+        } else {
+            exists=true;
+        }
         cursor.close();
         db.close();
         return exists;
@@ -114,7 +225,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             userID = cursor.getInt(0);
         } else {
-            //error - can't find user
+            // Error - can't find user
             userID = 0;
         }
 
@@ -130,7 +241,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             groupID = cursor.getInt(0);
         } else {
-            //error - can't find group
+            // Error - can't find group
             groupID = 0;
         }
 
@@ -147,7 +258,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             Username = cursor.getString(0);
         } else {
-            //error - can't find user
+            // Error - can't find user
             Username = "";
         }
 
@@ -155,6 +266,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //db.close();
         return Username;
     }
+
+    public String getCalendarDates(int userID){
+        String calendarDates;
+        String strUserID = Integer.toString(userID);
+        SQLiteDatabase db=this.getReadableDatabase();
+        Cursor cursor = db.query("users", new String[] { "calendarDates"}, "ID = ? ", new String[] {strUserID}, null, null, null);
+        if (cursor.moveToFirst()) {
+            calendarDates = cursor.getString(0);
+        } else {
+            // Error - can't find user
+            calendarDates = "";
+        }
+
+        cursor.close();
+        db.close();
+        return calendarDates;
+    }
+
 
     public String getGroupName(int groupID){
         String groupName;
@@ -164,7 +293,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             groupName = cursor.getString(0);
         } else {
-            //error - can't find group
+            // Error - can't find group
             groupName = "";
         }
 
@@ -208,7 +337,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    //use this to delete records, call by taking button out of comments in login.xml
+
+    // Use this to delete records, call by taking button out of comments in login.xml
     public Integer deleteData(String id){
         SQLiteDatabase db = this.getWritableDatabase();
         db.close();
@@ -216,10 +346,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    //used 24/07 to change name from registeruser to users, keeping here just in case
+    // Used 24/07 to change name from registeruser to users
     public void changeTableName(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(" ALTER TABLE " + TABLE_NAME + " RENAME TO "+ "users");
+        db.close();
+    }
+
+    // Used 22/08 to add calendarDates to users table
+    public void addColumnToTable(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(" ALTER TABLE " + TABLE_NAME + " ADD "+ "calendarDates TEXT");
         db.close();
     }
 
