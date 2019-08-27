@@ -1,14 +1,16 @@
 package com.lucy.calendarproject;
 
-import android.widget.Toast;
-
+import android.text.style.LineBackgroundSpan;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
+
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+
+//          --- This class is used for decorating days with only one event ---
 
 public class EventDecorator implements DayViewDecorator {
 
@@ -32,3 +34,7 @@ public class EventDecorator implements DayViewDecorator {
     }
 
 }
+
+
+
+

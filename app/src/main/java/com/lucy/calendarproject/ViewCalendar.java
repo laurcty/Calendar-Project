@@ -98,21 +98,25 @@ public class ViewCalendar extends AppCompatActivity {
             public void onClick(View view) {
 
                 // Add dot onto selected date if date doesn't already exist
-                CalendarDay date = calendar.getSelectedDate();
-                int day = date.getDay();
-                int month = date.getMonth();
-                int year = date.getYear();
-                String dateToAdd = day +"-"+ (month+1) +"-"+ year ;
+                try {
+                    CalendarDay date = calendar.getSelectedDate();
+                    int day = date.getDay();
+                    int month = date.getMonth();
+                    int year = date.getYear();
+                    String dateToAdd = day + "-" + (month + 1) + "-" + year;
 
-                if(decoratorArray[day]==null){
-                    calendarDays.add(date);
-                    decoratorReference = new EventDecorator(Color.rgb(143, 209, 219), calendarDays);
-                    decoratorArray[day] = decoratorReference;
-                    calendar.addDecorator(decoratorReference);
-                    calendar.invalidateDecorators();
+                    if (decoratorArray[day] == null) {
+                        calendarDays.add(date);
+                        decoratorReference = new EventDecorator(Color.rgb(143, 209, 219), calendarDays);
+                        decoratorArray[day] = decoratorReference;
+                        calendar.addDecorator(decoratorReference);
+                        calendar.invalidateDecorators();
 
-                    // Add this date to database
-                    db.addDate(userID, dateToAdd);
+                        // Add this date to database
+                        db.addDate(userID, dateToAdd);
+                    }
+                }catch(Exception e){
+                    // If no date is selected
                 }
 
             }
@@ -124,6 +128,7 @@ public class ViewCalendar extends AppCompatActivity {
             public void onClick(View view) {
 
                 // Delete dot from selected date
+                try{
                 CalendarDay date = calendar.getSelectedDate();
                 int day = date.getDay();
                 int month = date.getMonth();
@@ -140,6 +145,9 @@ public class ViewCalendar extends AppCompatActivity {
 
                     // Remove this date from database
                     db.removeDate(userID, dateToRemove);
+                }
+                }catch(Exception e){
+                    // If no date is selected
                 }
 
             }

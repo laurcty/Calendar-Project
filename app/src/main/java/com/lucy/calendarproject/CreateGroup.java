@@ -31,11 +31,11 @@ public class CreateGroup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_group);
 
-        //get userID of person logged in
+        // Get userID of person logged in
         final String strUserID = getIntent().getStringExtra("USER_ID");
         final int userID = Integer.parseInt(strUserID);
 
-        //find username from userID of person logged in
+        // Find username from userID of person logged in
         DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
         final String username = dbHelper.getUsername(userID);
 
@@ -51,7 +51,7 @@ public class CreateGroup extends AppCompatActivity {
         final TextView name7 = (TextView) findViewById(R.id.name7);
         final TextView name8 = (TextView) findViewById(R.id.name8);
 
-        //first add user who is logged in
+        // First add user who is logged in
         name1.setText(" " + username + " ");
         addedUsers.add(username);
 
@@ -63,11 +63,11 @@ public class CreateGroup extends AppCompatActivity {
                 String selectedUser = o.toString();
 
 
-                //validate to ensure same user only added to group once
+                // Validate to ensure same user only added to group once
                 if(!addedUsers.contains(selectedUser)) {
                     userAddedCounter++;
                     if (userAddedCounter == 1) {
-                        //do nothing because first user has already been added
+                        // Do nothing because first user has already been added
                     } else if (userAddedCounter == 2) {
                         name2.setText(" " + selectedUser + " ");
                         addedUsers.add(selectedUser);
@@ -105,7 +105,7 @@ public class CreateGroup extends AppCompatActivity {
         createGroupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //create group in groups table
+                // Create group in groups table
                 DatabaseHelper db = new DatabaseHelper(CreateGroup.this);
                 EditText groupName = (EditText)findViewById(R.id.edittext_groupname);
                 String strGroupName = groupName.getText().toString().trim();
@@ -114,7 +114,7 @@ public class CreateGroup extends AppCompatActivity {
                 if(!strGroupName.equals("") && addedUsers.size()>=2 && free) {
                     db.addGroup(strGroupName, addedUsers.size());
 
-                    //get ID of group that has been just created (since it is set as an autoincrement field in userGroups table)
+                    // Get ID of group that has been just created (since it is set as an autoincrement field in userGroups table)
                     int createdGroupID = db.getGroupID(strGroupName);
 
                     String addedUserName;
@@ -125,7 +125,7 @@ public class CreateGroup extends AppCompatActivity {
                         db.addUserGroupLink(addedUserID, createdGroupID);
                     }
 
-                    //switch back to main activity
+                    // Switch back to main activity
                     Intent Intent = new Intent(CreateGroup.this, MainActivity.class);
                     Intent.putExtra("USER_ID", strUserID);
                     startActivity(Intent);
@@ -155,7 +155,7 @@ public class CreateGroup extends AppCompatActivity {
                 if  (c.moveToFirst()) {
                     do {
                         String user = c.getString(c.getColumnIndex("username"));
-                        //don't add user if user = username of person logged in
+                        // Don't add user if user = username of person logged in
                         if(!user.equals(username)){
                             users.add(user);
                         }

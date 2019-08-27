@@ -21,21 +21,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //get userID
+        // Get userID
         final String strUserID = getIntent().getStringExtra("USER_ID");
         final int userID = Integer.parseInt(strUserID);
 
 
-        //database lookup to create arrayList with groups the user belongs to
+        // Database lookup to create arrayList with groups the user belongs to
         ArrayList<String> usersGroups = new ArrayList<String>();
         DatabaseHelper db = new DatabaseHelper(MainActivity.this);
         usersGroups= db.getGroupsOfCurrentUser(userID);
 
 
-        //get id of radio group
+        // Get id of radio group
         final RadioGroup rg = (RadioGroup) findViewById(R.id.myRadioGroup);
 
-        //populate radio group with groups by looping over ArrayList usersGroups
+        // Populate radio group with groups by looping over ArrayList usersGroups
         for(int i=0;i<usersGroups.size();i++){
 
             // Get name of group to add
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //change to viewGroup page when button clicked
+        // Change to viewGroup page when button clicked
         Button viewGroup = (Button) findViewById(R.id.viewGroup);
         viewGroup.setOnClickListener( new View.OnClickListener() {
 
@@ -73,11 +73,11 @@ public class MainActivity extends AppCompatActivity {
                         Intent.putExtra("NAME_OF_GROUP", groupName);
                         startActivity(Intent);
                     }else{
-                        //error - no group selected
+                        // Error - no group selected
                         Toast.makeText(MainActivity.this, "No group selected", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e){
-                    //goes in here if rb content is null
+                    // Goes in here if rb content is null
                     Toast.makeText(MainActivity.this, "No group selected", Toast.LENGTH_SHORT).show();
                 }
 
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //change to createGroup page when button clicked
+        // Change to createGroup page when button clicked
         Button createGroup = (Button) findViewById(R.id.createGroup);
         createGroup.setOnClickListener( new View.OnClickListener() {
 
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //change to ViewCalendar page when button clicked
+        // Change to ViewCalendar page when button clicked
         Button viewCalendar = (Button) findViewById(R.id.myCalendar);
         viewCalendar.setOnClickListener(new View.OnClickListener() {
 
