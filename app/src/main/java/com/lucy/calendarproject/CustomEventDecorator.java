@@ -13,7 +13,7 @@ import java.util.HashSet;
 
 public class CustomEventDecorator implements DayViewDecorator {
 
-    private static final int[] xOffsets = new int[]{-30,-15,0,15};          // The negative values shift the decorator to the left, positive to the right
+    private static final int[] xOffsets = new int[]{-30,-10,10,30};          // The negative values shift the decorator to the left, positive to the right
     private int color;
     private HashSet<CalendarDay> dates;
     private float dotRadius;
