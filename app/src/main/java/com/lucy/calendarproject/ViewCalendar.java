@@ -32,8 +32,6 @@ public class ViewCalendar extends AppCompatActivity {
     // Set up decorator reference so that it can be removed later
     private EventDecorator decoratorReference;
 
-    // Set up array of event decorator references so that they can be used to remove correct decorator
-    private EventDecorator[] decoratorArray = new EventDecorator[32];   // Todo only works for one month i.e can't have 20th of march and 20th of june, could change to 99999999 but that is SILLY
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +65,6 @@ public class ViewCalendar extends AppCompatActivity {
 
                 calendarDays.add(date);
                 decoratorReference = new EventDecorator(Color.rgb(143, 209, 219), calendarDays);
-                decoratorArray[day] = decoratorReference;
                 calendar.addDecorator(decoratorReference);
                 calendar.invalidateDecorators();
             }
@@ -100,19 +97,20 @@ public class ViewCalendar extends AppCompatActivity {
                 // Add dot onto selected date
                 try {
                     CalendarDay date = calendar.getSelectedDate();
-                    int day = date.getDay();
-                    int month = date.getMonth();
-                    int year = date.getYear();
-                    String dateToAdd = day + "-" + (month + 1) + "-" + year;
+                    if(!calendarDays.contains(date)) {
+                        int day = date.getDay();
+                        int month = date.getMonth();
+                        int year = date.getYear();
+                        String dateToAdd = day + "-" + (month + 1) + "-" + year;
 
-                    calendarDays.add(date);
-                    decoratorReference = new EventDecorator(Color.rgb(143, 209, 219), calendarDays);
-                    decoratorArray[day] = decoratorReference;
-                    calendar.addDecorator(decoratorReference);
-                    calendar.invalidateDecorators();
+                        calendarDays.add(date);
+                        decoratorReference = new EventDecorator(Color.rgb(143, 209, 219), calendarDays);
+                        calendar.addDecorator(decoratorReference);
+                        calendar.invalidateDecorators();
 
-                    // Add this date to database
-                    db.addDate(userID, dateToAdd);
+                        // Add this date to database
+                        db.addDate(userID, dateToAdd);
+                    }
 
                 }catch(Exception e){
                     // If no date is selected
@@ -132,8 +130,6 @@ public class ViewCalendar extends AppCompatActivity {
                 int month = date.getMonth();
                 int year = date.getYear();
                 String dateToRemove = day +"-"+ (month+1) +"-"+ year ;
-
-                if(decoratorArray[day]!=null){
 
                     calendarDays.remove(date);
                     // Remove this date from database
@@ -155,14 +151,12 @@ public class ViewCalendar extends AppCompatActivity {
                             CalendarDay date1 = CalendarDay.from(year1, month1 - 1, day1);
                             calendarDays.add(date1);
                             decoratorReference = new EventDecorator(Color.rgb(143, 209, 219), calendarDays);
-                            decoratorArray[day] = decoratorReference;
                             calendar.addDecorator(decoratorReference);
                             calendar.invalidateDecorators();
                         }
                     }catch(Exception e){
                         // User doesn't have any dates yet
                     }
-                }
                 }catch(Exception e){
                     // If no date is selected
                 }
