@@ -339,10 +339,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    // Use this to delete records, call by taking button out of comments in login.xml
+    // Use this to delete records
     public Integer deleteData(String id){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.close();
+        //db.close();
         return db.delete(TABLE_NAME, "ID = ?", new String[] {id});
     }
 

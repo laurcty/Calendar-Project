@@ -80,17 +80,23 @@
 
         <TextView
             android:layout_width="100dp"
+            android:layout_marginTop="15dp"
             android:layout_height="wrap_content"
             android:text="@string/group_name"/>
 
         <EditText
             android:layout_gravity="center_horizontal"
             android:id="@+id/edittext_groupname"
+            android:hint="@string/name_group_here"
+            android:maxLines="1"
+            android:inputType="text"
+            android:scrollHorizontally="true"
+            android:textSize="18sp"
             android:layout_width="190dp"
             android:layout_height="47dp"
             android:layout_marginTop="20dp"
-            android:paddingStart="40dp"
-            android:paddingEnd="40dp"/>
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"/>
 
 
     </LinearLayout>

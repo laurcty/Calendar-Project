@@ -164,7 +164,7 @@ public class ViewGroup extends AppCompatActivity {
         calendar.setSelectionMode(SELECTION_MODE_MULTIPLE);
 
 
-        /*        ----  Decorates day with up to 4 decorators, thinking of making new customSpan class for second row of decorators  ----        */
+        /*  todo      ----  Decorates day with up to 4 decorators, thinking of making new customSpan class for second row of decorators  ----        */
 
 
 
@@ -213,17 +213,33 @@ public class ViewGroup extends AppCompatActivity {
 
             // Find which users have this date in their calendars and collect in arrayList
             ArrayList<Integer> usersWithThisDate =new ArrayList<Integer>();
-            if(dates1.contains(formattedDate)) {
-                usersWithThisDate.add(1);
+            try {
+                if (dates1.contains(formattedDate)) {
+                    usersWithThisDate.add(1);
+                }
+            }catch(Exception e){
+                // User has no dates in their calendar yet
             }
-            if(dates2.contains(formattedDate)) {
-                usersWithThisDate.add(2);
+            try {
+                if(dates2.contains(formattedDate)) {
+                    usersWithThisDate.add(2);
+                }
+            }catch(Exception e){
+                // User has no dates in their calendar yet
             }
-            if(dates3.contains(formattedDate)) {
-                usersWithThisDate.add(3);
+            try {
+                if(dates3.contains(formattedDate)) {
+                    usersWithThisDate.add(3);
+                }
+            }catch(Exception e){
+                // User has no dates in their calendar yet
             }
-            if(dates4.contains(formattedDate)){
-                usersWithThisDate.add(4);
+            try {
+                if(dates4.contains(formattedDate)){
+                    usersWithThisDate.add(4);
+                }
+            }catch(Exception e){
+                // User has no dates in their calendar yet
             }
 
             CustomEventDecorator[] decoratorArray= setUpDecorators(usersWithThisDate, currDayCount);
