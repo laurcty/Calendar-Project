@@ -346,6 +346,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.delete(TABLE_NAME, "ID = ?", new String[] {id});
     }
 
+    // Use this to reset user's calendar
+    public void resetCalendar(int userID){
+
+        // Get the current dates the user has in their calendar
+        String currentDates;
+        String newDates;
+        String strUserID = Integer.toString(userID);
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query("users", new String[] { "calendarDates"}, "ID = ? ", new String[] {strUserID}, null, null, null);
+        if (cursor.moveToFirst()) {
+            try{
+                currentDates = cursor.getString(0);
+            }catch(Exception e){
+                // User has no dates yet so currentDates is set here to blank string
+                currentDates = "";
+            }
+
+            newDates = "";
+
+            ContentValues cv = new ContentValues();
+            cv.put("calendarDates",newDates);
+            db.update(TABLE_NAME, cv, "ID = ?", new String[]{strUserID});
+
+
+        } else {
+            // Error - can't find user
+        }
+
+        cursor.close();
+        db.close();
+    }
 
     // Used 24/07 to change name from registeruser to users
     public void changeTableName(){

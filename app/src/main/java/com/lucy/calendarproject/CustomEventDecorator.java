@@ -13,17 +13,20 @@ import java.util.HashSet;
 
 public class CustomEventDecorator implements DayViewDecorator {
 
-    private static final int[] xOffsets = new int[]{-30,-10,10,30};          // The negative values shift the decorator to the left, positive to the right
+    private static final int[] xOffsets = new int[]{-36,-12,12,36};          // The negative values shift the decorator to the left, positive to the right
+    private static final int[] yOffsets = new int[]{0,30};
     private int color;
     private HashSet<CalendarDay> dates;
     private float dotRadius;
-    private int spanType;
+    private int xSpanType;
+    private int ySpanType;
 
-    public CustomEventDecorator(int color, float dotRadius, int spanType) {
+    public CustomEventDecorator(int color, float dotRadius, int xSpanType, int ySpanType) {
         this.color = color;
         this.dotRadius = dotRadius;
         this.dates = new HashSet<>();
-        this.spanType = spanType;
+        this.xSpanType = xSpanType;
+        this.ySpanType = ySpanType;
     }
 
     public boolean addDate(CalendarDay day){
@@ -37,7 +40,7 @@ public class CustomEventDecorator implements DayViewDecorator {
 
     @Override
     public void decorate(DayViewFacade view) {
-        LineBackgroundSpan span = new CustomSpan(color, xOffsets[spanType]);
+        LineBackgroundSpan span = new CustomSpan(color, xOffsets[xSpanType], yOffsets[ySpanType]);
         view.addSpan(span);
     }
 }

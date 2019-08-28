@@ -76,42 +76,34 @@ public class ViewGroup extends AppCompatActivity {
                 name1.setText(" " + usersInGroup.get(i) + " ");
                 int userID1 = db.getUserID(usersInGroup.get(i));
                 dates1 = db.getCalendarDates(userID1);
-                //addDecorators(dates1, 1);
             } else if (i == 1) {
                 name2.setText(" " + usersInGroup.get(i) + " ");
                 int userID2 = db.getUserID(usersInGroup.get(i));
                 dates2 = db.getCalendarDates(userID2);
-                //addDecorators(dates2, 2);
             } else if (i == 2) {
                 name3.setText(" " + usersInGroup.get(i) + " ");
                 int userID3 = db.getUserID(usersInGroup.get(i));
                 dates3 = db.getCalendarDates(userID3);
-                //addDecorators(dates3, 3);
             } else if (i == 3) {
                 name4.setText(" " + usersInGroup.get(i) + " ");
                 int userID4 = db.getUserID(usersInGroup.get(i));
                 dates4 = db.getCalendarDates(userID4);
-                //addDecorators(dates4, 4);
             } else if (i == 4) {
                 name5.setText(" " + usersInGroup.get(i) + " ");
                 int userID5 = db.getUserID(usersInGroup.get(i));
                 dates5 = db.getCalendarDates(userID5);
-                //addDecorators(dates5, 5);
             } else if (i == 5) {
                 name6.setText(" " + usersInGroup.get(i) + " ");
                 int userID6 = db.getUserID(usersInGroup.get(i));
                 dates6 = db.getCalendarDates(userID6);
-                //addDecorators(dates6, 6);
             } else if (i == 6) {
                 name7.setText(" " + usersInGroup.get(i) + " ");
                 int userID7 = db.getUserID(usersInGroup.get(i));
                 dates7 = db.getCalendarDates(userID7);
-                //addDecorators(dates7, 7);
             } else if (i == 7) {
                 name8.setText(" " + usersInGroup.get(i) + " ");
                 int userID8 = db.getUserID(usersInGroup.get(i));
                 dates8 = db.getCalendarDates(userID8);
-                //addDecorators(dates8, 8);
             }
         }
 
@@ -152,7 +144,7 @@ public class ViewGroup extends AppCompatActivity {
     public String getBestDate(){
         String bestDate="";
 
-
+        // todo need to make this function do smth and display best dates
 
         return bestDate;
     }
@@ -162,10 +154,6 @@ public class ViewGroup extends AppCompatActivity {
         // Get id of calendarView
         final MaterialCalendarView calendar = (MaterialCalendarView) findViewById(R.id.calendarView);
         calendar.setSelectionMode(SELECTION_MODE_MULTIPLE);
-
-
-        /*  todo      ----  Decorates day with up to 4 decorators, thinking of making new customSpan class for second row of decorators  ----        */
-
 
 
         // Set up hashMap to map all dates in calendars to how many decorators they should have
@@ -179,22 +167,16 @@ public class ViewGroup extends AppCompatActivity {
                 setUpHashMap(hashMap, i , dates3);
             }else if(i==3){
                 setUpHashMap(hashMap, i , dates4);
-            }
-
-            /*else if(i==4){
+            } else if(i==4){
                 setUpHashMap(hashMap, i , dates5);
-            }
-            else if(i==5){
+            } else if(i==5){
                 setUpHashMap(hashMap, i , dates6);
             }else if(i==6){
                 setUpHashMap(hashMap, i , dates7);
             }else if(i==7){
                 setUpHashMap(hashMap, i , dates8);
             }
-*/
-
         }
-
 
 
         // Loop over all entries in hashMap to add the corresponding number of decorators to them
@@ -241,6 +223,34 @@ public class ViewGroup extends AppCompatActivity {
             }catch(Exception e){
                 // User has no dates in their calendar yet
             }
+            try {
+                if(dates5.contains(formattedDate)){
+                    usersWithThisDate.add(5);
+                }
+            }catch(Exception e){
+                // User has no dates in their calendar yet
+            }
+            try {
+                if(dates6.contains(formattedDate)){
+                    usersWithThisDate.add(6);
+                }
+            }catch(Exception e){
+                // User has no dates in their calendar yet
+            }
+            try {
+                if(dates7.contains(formattedDate)){
+                    usersWithThisDate.add(7);
+                }
+            }catch(Exception e){
+                // User has no dates in their calendar yet
+            }
+            try {
+                if(dates8.contains(formattedDate)){
+                    usersWithThisDate.add(8);
+                }
+            }catch(Exception e){
+                // User has no dates in their calendar yet
+            }
 
             CustomEventDecorator[] decoratorArray= setUpDecorators(usersWithThisDate, currDayCount);
 
@@ -260,38 +270,74 @@ public class ViewGroup extends AppCompatActivity {
             }
         }
 
-
-
-
     }
 
 
 
     public CustomEventDecorator[] setUpDecorators(ArrayList<Integer> usersWithThisDate, int currDayCount){
-        CustomEventDecorator[] decoratorArray = new CustomEventDecorator[usersWithThisDate.size()]; //Max 4 dots
+        CustomEventDecorator[] decoratorArray = new CustomEventDecorator[usersWithThisDate.size()];
 
 
         // Add decorators to decoratorArray if they should be added i.e. if that colour user has the date in their calendar
 
         // Use index as a counter to determine which spanType is used upon decorator creation (x position of the decorator)
         int index=0;
+        int xSpanType=0;
+        int ySpanType=0;
         if (usersWithThisDate.contains(1)) {
-            decoratorArray[index] = new CustomEventDecorator(Color.rgb(130, 192 , 169), 12, index);
+            decoratorArray[index] = new CustomEventDecorator(Color.rgb(130, 192 , 169), 12, xSpanType, ySpanType);
             index++;
+            xSpanType++;
         }
         if (usersWithThisDate.contains(2)) {
-            decoratorArray[index] = new CustomEventDecorator(Color.rgb(130, 155, 192), 12, index);
+            decoratorArray[index] = new CustomEventDecorator(Color.rgb(130, 155, 192), 12, xSpanType, ySpanType);
             index++;
+            xSpanType++;
         }
         if (usersWithThisDate.contains(3)) {
-            decoratorArray[index] = new CustomEventDecorator(Color.rgb(156, 130 , 192), 12, index);
+            decoratorArray[index] = new CustomEventDecorator(Color.rgb(156, 130 , 192), 12, xSpanType, ySpanType);
             index++;
+            xSpanType++;
         }
         if (usersWithThisDate.contains(4)) {
-            decoratorArray[index] = new CustomEventDecorator(Color.rgb(192, 130 , 171), 12, index);
+            decoratorArray[index] = new CustomEventDecorator(Color.rgb(192, 130 , 171), 12, xSpanType, ySpanType);
+            index++;
+            xSpanType++;
         }
-
-
+        if(xSpanType==4){
+            xSpanType=0;
+            ySpanType=1;
+        }
+        if (usersWithThisDate.contains(5)) {
+            decoratorArray[index] = new CustomEventDecorator(Color.rgb(192, 130 , 130), 12, xSpanType, ySpanType);
+            index++;
+            xSpanType++;
+        }
+        if(xSpanType==4){
+            xSpanType=0;
+            ySpanType=1;
+        }
+        if (usersWithThisDate.contains(6)) {
+            decoratorArray[index] = new CustomEventDecorator(Color.rgb(192, 155 , 130), 12, xSpanType, ySpanType);
+            index++;
+            xSpanType++;
+        }
+        if(xSpanType==4){
+            xSpanType=0;
+            ySpanType=1;
+        }
+        if (usersWithThisDate.contains(7)) {
+            decoratorArray[index] = new CustomEventDecorator(Color.rgb(192, 189 , 130), 12, xSpanType, ySpanType);
+            index++;
+            xSpanType++;
+        }
+        if(xSpanType==4){
+            xSpanType=0;
+            ySpanType=1;
+        }
+        if (usersWithThisDate.contains(8)) {
+            decoratorArray[index] = new CustomEventDecorator(Color.rgb(156, 192 , 130), 12, xSpanType, ySpanType);
+        }
         return decoratorArray;
     }
 
@@ -319,96 +365,4 @@ public class ViewGroup extends AppCompatActivity {
         }
     }
 
-
-    //      This function will be deleted once addCustomDecorators is ready for business
-/*
-    public void addDecorators(String calendarDates, int user){
-
-
-
-        // Get id of calendarView
-        final MaterialCalendarView calendar = (MaterialCalendarView) findViewById(R.id.calendarView);
-        calendar.setSelectionMode(SELECTION_MODE_MULTIPLE);
-
-
-
-
-
-        try {
-            String[] datesInCalendar = calendarDates.split(",");
-
-            for(int i=0; i<datesInCalendar.length; i++) {
-
-                String[] DMY = datesInCalendar[i].split("-");
-                int year = Integer.parseInt(DMY[2]);
-                int month = Integer.parseInt(DMY[1]);
-                int day = Integer.parseInt(DMY[0]);
-                CalendarDay date = CalendarDay.from(year, month - 1, day);
-
-
-                EventDecorator decoratorReference;
-                if(user==1){
-                    List<CalendarDay> calendarDays = new ArrayList<>();
-                    calendarDays.add(date);
-                    decoratorReference = new EventDecorator(Color.rgb(130, 192 , 169), calendarDays);
-                    calendar.addDecorator(decoratorReference);
-                    calendar.invalidateDecorators();
-                }else if(user==2) {
-                    List<CalendarDay> calendarDays2 = new ArrayList<>();
-                    calendarDays2.add(date);
-                    decoratorReference = new EventDecorator(Color.rgb(130, 155, 192), calendarDays2);
-                    calendar.addDecorator(decoratorReference);
-                    calendar.invalidateDecorators();
-                }else if(user==3){
-                    List<CalendarDay> calendarDays = new ArrayList<>();
-                    calendarDays.add(date);
-                    decoratorReference = new EventDecorator(Color.rgb(156, 130 , 192), calendarDays);
-                    calendar.addDecorator(decoratorReference);
-                    calendar.invalidateDecorators();
-                }else if(user==4){
-                    List<CalendarDay> calendarDays = new ArrayList<>();
-                    calendarDays.add(date);
-                    decoratorReference = new EventDecorator(Color.rgb(192, 130 , 171), calendarDays);
-                    calendar.addDecorator(decoratorReference);
-                    calendar.invalidateDecorators();
-                }else if(user==5){
-                    List<CalendarDay> calendarDays = new ArrayList<>();
-                    calendarDays.add(date);
-                    decoratorReference = new EventDecorator(Color.rgb(192, 130 , 130), calendarDays);
-                    calendar.addDecorator(decoratorReference);
-                    calendar.invalidateDecorators();
-                }else if(user==6){
-                    List<CalendarDay> calendarDays = new ArrayList<>();
-                    calendarDays.add(date);
-                    decoratorReference = new EventDecorator(Color.rgb(192, 155 , 130), calendarDays);
-                    calendar.addDecorator(decoratorReference);
-                    calendar.invalidateDecorators();
-                }else if(user==7){
-                    List<CalendarDay> calendarDays = new ArrayList<>();
-                    calendarDays.add(date);
-                    decoratorReference = new EventDecorator(Color.rgb(192, 189 , 130), calendarDays);
-                    calendar.addDecorator(decoratorReference);
-                    calendar.invalidateDecorators();
-                }else{
-                    List<CalendarDay> calendarDays = new ArrayList<>();
-                    calendarDays.add(date);
-                    decoratorReference = new EventDecorator(Color.rgb(156, 192 , 130), calendarDays);
-                    calendar.addDecorator(decoratorReference);
-                    calendar.invalidateDecorators();
-                }
-
-
-            }
-
-        }catch(Exception e){
-            // User doesn't have any dates yet
-        }
-
-
-
-
-
-
-    }
-*/
 }

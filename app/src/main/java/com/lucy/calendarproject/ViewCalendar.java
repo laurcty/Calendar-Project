@@ -97,7 +97,7 @@ public class ViewCalendar extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                // Add dot onto selected date if date doesn't already exist
+                // Add dot onto selected date
                 try {
                     CalendarDay date = calendar.getSelectedDate();
                     int day = date.getDay();
@@ -105,16 +105,15 @@ public class ViewCalendar extends AppCompatActivity {
                     int year = date.getYear();
                     String dateToAdd = day + "-" + (month + 1) + "-" + year;
 
-                    if (decoratorArray[day] == null) {
-                        calendarDays.add(date);
-                        decoratorReference = new EventDecorator(Color.rgb(143, 209, 219), calendarDays);
-                        decoratorArray[day] = decoratorReference;
-                        calendar.addDecorator(decoratorReference);
-                        calendar.invalidateDecorators();
+                    calendarDays.add(date);
+                    decoratorReference = new EventDecorator(Color.rgb(143, 209, 219), calendarDays);
+                    decoratorArray[day] = decoratorReference;
+                    calendar.addDecorator(decoratorReference);
+                    calendar.invalidateDecorators();
 
-                        // Add this date to database
-                        db.addDate(userID, dateToAdd);
-                    }
+                    // Add this date to database
+                    db.addDate(userID, dateToAdd);
+
                 }catch(Exception e){
                     // If no date is selected
                 }
@@ -127,7 +126,6 @@ public class ViewCalendar extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                // Delete dot from selected date
                 try{
                 CalendarDay date = calendar.getSelectedDate();
                 int day = date.getDay();
@@ -136,20 +134,38 @@ public class ViewCalendar extends AppCompatActivity {
                 String dateToRemove = day +"-"+ (month+1) +"-"+ year ;
 
                 if(decoratorArray[day]!=null){
-                    //todo fix bug where can't delete unless one after it is deleted (bug is only visual, database works fine)
-                    calendarDays.remove(date);
-                    EventDecorator decoratorRefFromArray = decoratorArray[day];
-                    decoratorArray[day] = null;
-                    calendar.removeDecorator(decoratorRefFromArray);
-                    calendar.invalidateDecorators();
 
+                    calendarDays.remove(date);
                     // Remove this date from database
                     db.removeDate(userID, dateToRemove);
+
+                    // Remove all decorators
+                    calendar.removeDecorators();
+
+                    // Add all decorators back except one which has been deleted
+                    final List<CalendarDay> calendarDays = new ArrayList<>();
+                    try {
+                        String calendarDates = db.getCalendarDates(userID);
+                        String[] datesInCalendar = calendarDates.split(",");
+                        for(int i=0; i<datesInCalendar.length; i++) {
+                            String[] DMY = datesInCalendar[i].split("-");
+                            int year1 = Integer.parseInt(DMY[2]);
+                            int month1 = Integer.parseInt(DMY[1]);
+                            int day1 = Integer.parseInt(DMY[0]);
+                            CalendarDay date1 = CalendarDay.from(year1, month1 - 1, day1);
+                            calendarDays.add(date1);
+                            decoratorReference = new EventDecorator(Color.rgb(143, 209, 219), calendarDays);
+                            decoratorArray[day] = decoratorReference;
+                            calendar.addDecorator(decoratorReference);
+                            calendar.invalidateDecorators();
+                        }
+                    }catch(Exception e){
+                        // User doesn't have any dates yet
+                    }
                 }
                 }catch(Exception e){
                     // If no date is selected
                 }
-
             }
         });
 

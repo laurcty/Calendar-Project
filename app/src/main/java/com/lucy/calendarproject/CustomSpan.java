@@ -8,12 +8,14 @@ import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 public class CustomSpan extends DotSpan{
     private int color;
     private int xOffset;
+    private int yOffset;
     private float radius=15;
 
 
-    CustomSpan(int color, int xOffset){
+    CustomSpan(int color, int xOffset, int yOffset){
         this.color = color;
         this.xOffset = xOffset;
+        this.yOffset = yOffset;
     }
 
     /*Note! The following code is more or less copy-pasted from the DotSpan class. I have commented the changes below.*/
@@ -24,10 +26,9 @@ public class CustomSpan extends DotSpan{
         if (color != 0) {
             paint.setColor(color);
         }
-        int x = ((left + right) / 2); /*This is the x-coordinate right
-    below the date. If we add to x, we will draw the
-    circle to the right of the date and vice versa if we subtract from x.*/
-        canvas.drawCircle(x + xOffset, bottom + radius, radius, paint);
+        int x = ((left + right) / 2);
+
+        canvas.drawCircle(x + xOffset, bottom + 20 + yOffset, radius, paint);
         paint.setColor(oldColor);
     }
 }

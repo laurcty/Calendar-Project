@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
         DatabaseHelper db = new DatabaseHelper(MainActivity.this);
         usersGroups= db.getGroupsOfCurrentUser(userID);
 
-
         // Get id of radio group
         final RadioGroup rg = (RadioGroup) findViewById(R.id.myRadioGroup);
 
