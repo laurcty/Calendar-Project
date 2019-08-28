@@ -30,7 +30,7 @@ import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.
 
 public class ViewGroup extends AppCompatActivity {
 
-    // Set up global variables to store users' calendars
+    // Set up global variables to store users and their calendars
     String dates1;
     String dates2;
     String dates3;
@@ -69,7 +69,6 @@ public class ViewGroup extends AppCompatActivity {
         usersInGroup= db.getUsersInGroup(groupID);
 
 
-        String allDates="";
 
         // Add names of users in group to scrollView at top and save their calendars in strings
         for(int i=0;i<usersInGroup.size();i++) {
@@ -77,49 +76,41 @@ public class ViewGroup extends AppCompatActivity {
                 name1.setText(" " + usersInGroup.get(i) + " ");
                 int userID1 = db.getUserID(usersInGroup.get(i));
                 dates1 = db.getCalendarDates(userID1);
-                allDates = allDates + "," + dates1;
                 //addDecorators(dates1, 1);
             } else if (i == 1) {
                 name2.setText(" " + usersInGroup.get(i) + " ");
                 int userID2 = db.getUserID(usersInGroup.get(i));
                 dates2 = db.getCalendarDates(userID2);
-                allDates = allDates + "," + dates2;
                 //addDecorators(dates2, 2);
             } else if (i == 2) {
                 name3.setText(" " + usersInGroup.get(i) + " ");
                 int userID3 = db.getUserID(usersInGroup.get(i));
                 dates3 = db.getCalendarDates(userID3);
-                allDates = allDates + "," + dates3;
                 //addDecorators(dates3, 3);
             } else if (i == 3) {
                 name4.setText(" " + usersInGroup.get(i) + " ");
                 int userID4 = db.getUserID(usersInGroup.get(i));
                 dates4 = db.getCalendarDates(userID4);
-                allDates = allDates + "," + dates4;
                 //addDecorators(dates4, 4);
             } else if (i == 4) {
                 name5.setText(" " + usersInGroup.get(i) + " ");
                 int userID5 = db.getUserID(usersInGroup.get(i));
                 dates5 = db.getCalendarDates(userID5);
-                allDates = allDates + "," + dates5;
                 //addDecorators(dates5, 5);
             } else if (i == 5) {
                 name6.setText(" " + usersInGroup.get(i) + " ");
                 int userID6 = db.getUserID(usersInGroup.get(i));
                 dates6 = db.getCalendarDates(userID6);
-                allDates = allDates + "," + dates6;
                 //addDecorators(dates6, 6);
             } else if (i == 6) {
                 name7.setText(" " + usersInGroup.get(i) + " ");
                 int userID7 = db.getUserID(usersInGroup.get(i));
                 dates7 = db.getCalendarDates(userID7);
-                allDates = allDates + "," + dates7;
                 //addDecorators(dates7, 7);
             } else if (i == 7) {
                 name8.setText(" " + usersInGroup.get(i) + " ");
                 int userID8 = db.getUserID(usersInGroup.get(i));
                 dates8 = db.getCalendarDates(userID8);
-                allDates = allDates + "," + dates8;
                 //addDecorators(dates8, 8);
             }
         }
@@ -127,8 +118,6 @@ public class ViewGroup extends AppCompatActivity {
 
         addCustomDecorators(usersInGroup.size());
 
-        // Set up new string that's the same as allDates so that it can be declared final (to be used in onClick method)
-        final String AllDates = allDates;
 
         // Create popup window when findDate button pressed
         Button findDate = (Button) findViewById(R.id.findDate);
@@ -145,8 +134,8 @@ public class ViewGroup extends AppCompatActivity {
                 int height = LinearLayout.LayoutParams.WRAP_CONTENT;
                 boolean focusable = true;       // Means popup disappears when you tap outside it
                 final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
- 
-                String bestDate = getBestDate(AllDates);
+
+                getBestDate();
 
                 // Change textViews
                 TextView popupTitle = (TextView) popupWindow.getContentView().findViewById(R.id.popupTitle);
@@ -160,11 +149,8 @@ public class ViewGroup extends AppCompatActivity {
 
     }
 
-    public String getBestDate(String allDates){
+    public String getBestDate(){
         String bestDate="";
-
-        // Split allDates into an array with all of the dates in it
-        String[] datesInCalendar = allDates.split(",");
 
 
 
@@ -180,20 +166,9 @@ public class ViewGroup extends AppCompatActivity {
 
         /*        ----  Decorates day with up to 4 decorators, thinking of making new customSpan class for second row of decorators  ----        */
 
-        CustomEventDecorator[] decoratorArray = new CustomEventDecorator[4]; //Max 4 dots
-        for(int i = 0; i<decoratorArray.length; i++)
-            if(i==0) {
-                decoratorArray[i] = new CustomEventDecorator(Color.rgb(130, 192, 169), 12, i);
-            }else if(i==1){
-                decoratorArray[i] = new CustomEventDecorator(Color.rgb(130, 155, 192), 12, i);
-            }else if(i==2){
-                decoratorArray[i] = new CustomEventDecorator(Color.rgb(156, 130 , 192), 12, i);
-            }else{
-                decoratorArray[i] = new CustomEventDecorator(Color.rgb(192, 130 , 171), 12, i);
-            }
 
 
-        // Set up hashMap to map all dates in calendars to how many decorators they should have             // Todo figure out how to store which user has which date to sort out colours
+        // Set up hashMap to map all dates in calendars to how many decorators they should have
         HashMap<CalendarDay, Integer> hashMap = new HashMap<CalendarDay, Integer>();
         for(int i=0;i<noUsersInGroup;i++) {
             if(i==0) {
@@ -223,35 +198,108 @@ public class ViewGroup extends AppCompatActivity {
 
 
         // Loop over all entries in hashMap to add the corresponding number of decorators to them
+
         for(Map.Entry<CalendarDay,Integer> entry : hashMap.entrySet()){
+
+
             CalendarDay currDay = entry.getKey();
             Integer currDayCount = entry.getValue();
+
+            // Convert to stored date format to check against users' calendars
+            int day = currDay.getDay();
+            int month = currDay.getMonth();
+            int year = currDay.getYear();
+            String formattedDate = day + "-" + (month + 1) + "-" + year;
+
+            // Find which users have this date in their calendars and collect in arrayList
+            ArrayList<Integer> usersWithThisDate =new ArrayList<Integer>();
+            if(dates1.contains(formattedDate)) {
+                usersWithThisDate.add(1);
+            }
+            if(dates2.contains(formattedDate)) {
+                usersWithThisDate.add(2);
+            }
+            if(dates3.contains(formattedDate)) {
+                usersWithThisDate.add(3);
+            }
+            if(dates4.contains(formattedDate)){
+                usersWithThisDate.add(4);
+            }
+
+            CustomEventDecorator[] decoratorArray= setUpDecorators(usersWithThisDate, currDayCount);
+
+            int counter=0;
             for(int j = 0; j<currDayCount; j++)
-                decoratorArray[j].addDate(currDay);
+                try {
+                    decoratorArray[counter].addDate(currDay);
+                    counter++;
+                }catch(Exception e){
+                    // currDay is null
+                }
+            try {
+                calendar.addDecorators(decoratorArray);
+                calendar.invalidateDecorators();
+            }catch(Exception e){
+                // decoratorArray is null
+            }
         }
 
-        calendar.addDecorators(decoratorArray);
-        calendar.invalidateDecorators();
 
+
+
+    }
+
+
+
+    public CustomEventDecorator[] setUpDecorators(ArrayList<Integer> usersWithThisDate, int currDayCount){
+        CustomEventDecorator[] decoratorArray = new CustomEventDecorator[usersWithThisDate.size()]; //Max 4 dots
+
+
+        // Add decorators to decoratorArray if they should be added i.e. if that colour user has the date in their calendar
+
+        // Use index as a counter to determine which spanType is used upon decorator creation (x position of the decorator)
+        int index=0;
+        if (usersWithThisDate.contains(1)) {
+            decoratorArray[index] = new CustomEventDecorator(Color.rgb(130, 192 , 169), 12, index);
+            index++;
+        }
+        if (usersWithThisDate.contains(2)) {
+            decoratorArray[index] = new CustomEventDecorator(Color.rgb(130, 155, 192), 12, index);
+            index++;
+        }
+        if (usersWithThisDate.contains(3)) {
+            decoratorArray[index] = new CustomEventDecorator(Color.rgb(156, 130 , 192), 12, index);
+            index++;
+        }
+        if (usersWithThisDate.contains(4)) {
+            decoratorArray[index] = new CustomEventDecorator(Color.rgb(192, 130 , 171), 12, index);
+        }
+
+
+        return decoratorArray;
     }
 
 
 
     public void setUpHashMap(HashMap<CalendarDay, Integer> hashMap, int counter, String dates){
         // Split user's calendar into CalendarDays
-        String[] userDates = dates.split(",");
+        try {
+            String[] userDates = dates.split(",");
 
-        for(int j=0;j<userDates.length;j++){
-            // If date already in hashMap, increment number mapped to that date, if not add new entry of date and map to number one
+            for (int j = 0; j < userDates.length; j++) {
+                // If date already in hashMap, increment number mapped to that date, if not add new entry of date and map to number one
 
-            String[] DMY = userDates[j].split("-");
-            int year = Integer.parseInt(DMY[2]);
-            int month = Integer.parseInt(DMY[1]);
-            int day = Integer.parseInt(DMY[0]);
-            CalendarDay date = CalendarDay.from(year, month - 1, day);
+                String[] DMY = userDates[j].split("-");
+                int year = Integer.parseInt(DMY[2]);
+                int month = Integer.parseInt(DMY[1]);
+                int day = Integer.parseInt(DMY[0]);
+                CalendarDay date = CalendarDay.from(year, month - 1, day);
 
-            hashMap.putIfAbsent(date,0);
-            hashMap.put(date, hashMap.get(date)+1);
+                hashMap.putIfAbsent(date, 0);
+                hashMap.put(date, hashMap.get(date) + 1);
+            }
+        }catch(Exception e){
+            // User has no dates in calendar
         }
     }
 
