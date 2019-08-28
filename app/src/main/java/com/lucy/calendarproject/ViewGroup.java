@@ -239,7 +239,7 @@ public class ViewGroup extends AppCompatActivity {
 
     public void setUpHashMap(HashMap<CalendarDay, Integer> hashMap, int counter, String dates){
         // Split user's calendar into CalendarDays
-        String[] userDates = dates1.split(",");
+        String[] userDates = dates.split(",");
 
         for(int j=0;j<userDates.length;j++){
             // If date already in hashMap, increment number mapped to that date, if not add new entry of date and map to number one
