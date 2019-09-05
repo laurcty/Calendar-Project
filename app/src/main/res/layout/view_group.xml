@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:text="Group ID"
+        android:text="@string/group_id"
         android:id="@+id/GroupID"/>
 
 
@@ -89,14 +89,18 @@
         app:mcv_selectionColor="#DF7098"
         />
 
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
     <Button
         android:id="@+id/findDate"
         android:layout_width="100dp"
         android:layout_height="52dp"
         android:layout_marginTop="10dp"
-        android:layout_marginStart="130dp"
-        android:layout_marginEnd="170dp"
-        android:text="Find Date" />
+        android:text="@string/find_date" />
+
+    </LinearLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

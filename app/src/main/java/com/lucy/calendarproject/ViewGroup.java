@@ -22,10 +22,15 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static com.lucy.calendarproject.R.id.bestDateNoUsers1;
 import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.SELECTION_MODE_MULTIPLE;
 
 public class ViewGroup extends AppCompatActivity {
@@ -40,6 +45,8 @@ public class ViewGroup extends AppCompatActivity {
     String dates7;
     String dates8;
 
+    // Set up hash map to link dates to how many users have that date
+    HashMap<CalendarDay, Integer> hashMap = new HashMap<CalendarDay, Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,37 +134,93 @@ public class ViewGroup extends AppCompatActivity {
                 boolean focusable = true;       // Means popup disappears when you tap outside it
                 final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
-                getBestDate();
+                try {
+                    HashMap<CalendarDay, Integer> sortedHashMap = getBestDate();
+                    Map.Entry<CalendarDay, Integer> hashMapData = sortedHashMap.entrySet().iterator().next();
+                    CalendarDay bestDate = hashMapData.getKey();
+                    int noPeopleBusy = hashMapData.getValue();
 
-                // Change textViews
-                TextView popupTitle = (TextView) popupWindow.getContentView().findViewById(R.id.popupTitle);
-                popupTitle.setText("Best dates:");
+                    int day = bestDate.getDay();
+                    int month = bestDate.getMonth();
+                    int year = bestDate.getYear();
+                    String formattedDate = day + "-" + (month + 1) + "-" + year;
 
-                // Show popupWindow
-                popupWindow.showAtLocation(v, Gravity.CENTER, 0, -400);
+                    // Change textViews
+                    TextView popupTitle = (TextView) popupWindow.getContentView().findViewById(R.id.popupTitle);
+                    popupTitle.setText("Best dates:");
+                    TextView tvBestDate = (TextView) popupWindow.getContentView().findViewById(R.id.BestDate1);
+                    tvBestDate.setText(formattedDate);
+                    //TextView BestDate2 = (TextView) popupWindow.getContentView().findViewById(R.id.BestDate2);
+                    //BestDate2.setText(noPeopleBusy);
+
+                    // Show popupWindow
+                    popupWindow.showAtLocation(v, Gravity.CENTER, 0, -400);
+                }catch (Exception e){
+                    // No dates selected
+                    // todo make toast popup here
+                }
 
             }
         });
 
     }
 
-    public String getBestDate(){
-        String bestDate="";
 
-        // todo need to make this function do smth and display best dates
+    public HashMap<CalendarDay, Integer> getBestDate(){
 
-        return bestDate;
+        // todo print more than one good date, along with how many people are free on each date that is chosen by algorithm
+        // todo try catch to make it not crash when no dates are selected
+
+        // Store selected dates in list
+        final MaterialCalendarView calendar = (MaterialCalendarView) findViewById(R.id.calendarView);
+        List<CalendarDay> selectedDates = calendar.getSelectedDates();
+
+        // Set up new hash map for dates which are both selected by user AND have decorators on them
+        HashMap<CalendarDay, Integer> selectedDatesHashMap = new HashMap<CalendarDay, Integer>();
+
+        // Set up LINKED hash map (retains order elements were added in) which will be the final one to store sorted dates
+        HashMap<CalendarDay, Integer> sortedHashMap = new LinkedHashMap<CalendarDay, Integer>();
+
+        // Loop around array of selected dates to find those which are not in the hashMap (everyone is free)
+        for (CalendarDay date : selectedDates) {
+            if(hashMap.containsKey(date)){
+                // Add date to new hashMap to be sorted
+                selectedDatesHashMap.put(date, hashMap.get(date));
+            }else{
+                // Add date to "front" of sortedHashMap as these dates are the best so should be suggested first
+                sortedHashMap.put(date, 0);
+            }
+        }
+
+        // Store all elements of hashMap in a LinkedList
+        List<Map.Entry<CalendarDay, Integer> > list = new LinkedList<Map.Entry<CalendarDay, Integer> >(selectedDatesHashMap.entrySet());
+
+        // Sort the LinkedList based on the integers mapped to each date
+        Collections.sort(list, new Comparator<Map.Entry<CalendarDay, Integer> >() {
+            public int compare(Map.Entry<CalendarDay, Integer> o1,
+                               Map.Entry<CalendarDay, Integer> o2)
+            {
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+
+        // Enter sorted dates into linked hash map
+        for (Map.Entry<CalendarDay, Integer> listData : list) {
+            sortedHashMap.put(listData.getKey(), listData.getValue());
+        }
+
+        return sortedHashMap;
     }
 
 
     public void addCustomDecorators(int noUsersInGroup){
         // Get id of calendarView
         final MaterialCalendarView calendar = (MaterialCalendarView) findViewById(R.id.calendarView);
-        calendar.setSelectionMode(SELECTION_MODE_MULTIPLE);
+        calendar.setSelectionMode(MaterialCalendarView.SELECTION_MODE_RANGE);
 
 
         // Set up hashMap to map all dates in calendars to how many decorators they should have
-        HashMap<CalendarDay, Integer> hashMap = new HashMap<CalendarDay, Integer>();
         for(int i=0;i<noUsersInGroup;i++) {
             if(i==0) {
                 setUpHashMap(hashMap, i , dates1);
@@ -182,7 +245,6 @@ public class ViewGroup extends AppCompatActivity {
         // Loop over all entries in hashMap to add the corresponding number of decorators to them
 
         for(Map.Entry<CalendarDay,Integer> entry : hashMap.entrySet()){
-
 
             CalendarDay currDay = entry.getKey();
             Integer currDayCount = entry.getValue();
