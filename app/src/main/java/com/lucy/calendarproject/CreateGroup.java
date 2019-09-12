@@ -98,6 +98,21 @@ public class CreateGroup extends AppCompatActivity {
 
                 //todo make it so that you can take a user out of the group when you click it in the scrollview at the top
 
+
+                // Can't remove name1 from group as that is the user who is logged in
+                name2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // Remove name from addedUsers arrayList
+                        //addedUsers.remove(addedUsers.indexOf(name2.getText()));   //todo this doesn't work
+
+                        // Remove name from listView
+                        name2.setText("");
+
+                        // Subtract one from addedUsersCounter
+                        userAddedCounter--;
+                    }
+                });
             }
         });
 

@@ -150,14 +150,14 @@ public class ViewGroup extends AppCompatActivity {
                     popupTitle.setText("Best dates:");
                     TextView tvBestDate = (TextView) popupWindow.getContentView().findViewById(R.id.BestDate1);
                     tvBestDate.setText(formattedDate);
-                    //TextView BestDate2 = (TextView) popupWindow.getContentView().findViewById(R.id.BestDate2);
-                    //BestDate2.setText(noPeopleBusy);
+                    TextView nextBestDate = (TextView) popupWindow.getContentView().findViewById(R.id.BestDate2);
+                    nextBestDate.setText(noPeopleBusy);
 
                     // Show popupWindow
                     popupWindow.showAtLocation(v, Gravity.CENTER, 0, -400);
                 }catch (Exception e){
                     // No dates selected
-                    // todo make toast popup here
+                    Toast.makeText(ViewGroup.this, "Please select a range of dates.", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -169,7 +169,6 @@ public class ViewGroup extends AppCompatActivity {
     public HashMap<CalendarDay, Integer> getBestDate(){
 
         // todo print more than one good date, along with how many people are free on each date that is chosen by algorithm
-        // todo try catch to make it not crash when no dates are selected
 
         // Store selected dates in list
         final MaterialCalendarView calendar = (MaterialCalendarView) findViewById(R.id.calendarView);

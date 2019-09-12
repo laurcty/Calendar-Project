@@ -43,11 +43,14 @@ public class MainActivity extends AppCompatActivity {
             // Initialize a new RadioButton
             RadioButton radioButton = new RadioButton(getApplicationContext());
 
-            // Set text of new button
+            // Set padding of radio button
+            radioButton.setPadding(28,0,0,0);
+
+            // Set text of radio button
+            radioButton.setTextAppearance(MainActivity.this, android.R.style.TextAppearance_DeviceDefault_Medium);
             radioButton.setText(groupName);
 
-            // todo make set colour work otherwise it's ugly green idk why this line does nothing
-            radioButton.setHighlightColor(Color.argb(90, 223, 112, 152));
+            radioButton.setButtonDrawable(R.drawable.radio_button_selector);
 
             // Add radio button to group
             rg.addView(radioButton);
