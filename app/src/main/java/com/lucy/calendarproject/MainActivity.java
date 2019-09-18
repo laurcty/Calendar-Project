@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
+
         // Get userID
         final String strUserID = getIntent().getStringExtra("USER_ID");
         final int userID = Integer.parseInt(strUserID);
@@ -110,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(Intent);
             }
         });
-
+*/
     }
 }
 
