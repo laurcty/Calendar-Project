@@ -9,6 +9,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+
+// This class is no longer used and has been replaced with background.java
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "register.db";
     public static final String TABLE_NAME = "users";
@@ -22,7 +25,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, 1);
     }
 
-    // todo Set up server and sync so it can be used on multiple devices
 
 
     @Override

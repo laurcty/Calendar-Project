@@ -10,6 +10,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+// this class is no longer used, has been replaced by newLogin.java
+
 public class Login extends AppCompatActivity {
     EditText mTextUsername;
     EditText mTextPassword;

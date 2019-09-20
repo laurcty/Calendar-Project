@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,11 +20,12 @@ import java.net.URLEncoder;
 
 public class background extends AsyncTask<String, Void,String> {
 
+    // This class was created with the help of the tutorial https://www.youtube.com/watch?v=4e8be8xseqE&t=19s
+
     AlertDialog dialog;
     Context context;
-    public Boolean login = false;
-    public background(Context context)
-    {
+
+    public background(Context context) {
         this.context = context;
     }
 
@@ -35,21 +37,23 @@ public class background extends AsyncTask<String, Void,String> {
     @Override
     protected void onPostExecute(String s) {
         dialog.setMessage(s);
-        dialog.show();
-        if(s.contains("Login successful"))
-        {
+
+        if(s.contains("Login successful")) {
             Intent intent_name = new Intent();
             intent_name.setClass(context.getApplicationContext(),MainActivity.class);
             context.startActivity(intent_name);
+        }else{
+            dialog.show();
         }
     }
     @Override
     protected String doInBackground(String... voids) {
 
-        System.out.println("hello");
         String result = "";
-        String user = voids[0];
-        String pass = voids[1];
+        String columnName1 = voids[0];
+        String columnName2 = voids[1];
+        String data1 = voids[2];
+        String data2 = voids[3];
         String connstr = "http://192.168.1.113:8080/login.php";
 
         try {
@@ -59,22 +63,16 @@ public class background extends AsyncTask<String, Void,String> {
             http.setDoInput(true);
             http.setDoOutput(true);
 
-            System.out.println("before output stream");
-
             OutputStream ops = http.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops,"UTF-8"));
-            String data = URLEncoder.encode("username","UTF-8")+"="+URLEncoder.encode(user,"UTF-8")
-                    +"&&"+URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(pass,"UTF-8");
+            String data = URLEncoder.encode(columnName1,"UTF-8")+"="+URLEncoder.encode(data1,"UTF-8")
+                    +"&&"+URLEncoder.encode(columnName2,"UTF-8")+"="+URLEncoder.encode(data2,"UTF-8");
             writer.write(data);
             writer.flush();
             writer.close();
             ops.close();
 
-            System.out.println("before input stream");
-
             InputStream ips = http.getInputStream();
-
-            System.out.println("after input stream");
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(ips,"ISO-8859-1"));
             String line ="";
@@ -95,8 +93,6 @@ public class background extends AsyncTask<String, Void,String> {
             result = e.getMessage();
             System.out.println("In the second catch IOException: "+e);
         }
-
-        System.out.println("hello");
 
         return result;
     }

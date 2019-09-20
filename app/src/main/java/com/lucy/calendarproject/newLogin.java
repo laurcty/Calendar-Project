@@ -15,7 +15,7 @@ public class newLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_login);
 
-        usr = (EditText) findViewById( R.id.username);
+        usr = (EditText) findViewById(R.id.username);
         pas = (EditText) findViewById(R.id.password);
     }
 
@@ -24,6 +24,7 @@ public class newLogin extends AppCompatActivity {
         String pass = pas.getText().toString();
 
         background bg = new background(this);
-        bg.execute(user,pass);
+
+        bg.execute("username","password",user,pass);
     }
 }

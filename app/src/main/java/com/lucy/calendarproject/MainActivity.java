@@ -21,17 +21,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-
+/*
         // Get userID
         final String strUserID = getIntent().getStringExtra("USER_ID");
         final int userID = Integer.parseInt(strUserID);
-
+*/
 
         // Database lookup to create arrayList with groups the user belongs to
         ArrayList<String> usersGroups = new ArrayList<String>();
         DatabaseHelper db = new DatabaseHelper(MainActivity.this);
-        usersGroups= db.getGroupsOfCurrentUser(userID);
+        usersGroups= db.getGroupsOfCurrentUser(1);          //todo remember this is temporarily hardcoded to 1
 
         // Get id of radio group
         final RadioGroup rg = (RadioGroup) findViewById(R.id.myRadioGroup);
@@ -58,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
             rg.addView(radioButton);
 
         }
-
 
 
         // Change to viewGroup page when button clicked
@@ -89,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         // Change to createGroup page when button clicked
         Button createGroup = (Button) findViewById(R.id.createGroup);
         createGroup.setOnClickListener( new View.OnClickListener() {
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent Intent = new Intent(MainActivity.this, CreateGroup.class);
-                Intent.putExtra("USER_ID", strUserID);
+                Intent.putExtra("USER_ID", "1");        //todo remember this is temporarily hardcoded to 1
                 startActivity(Intent);
             }
         });
@@ -108,11 +108,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent Intent = new Intent(MainActivity.this, ViewCalendar.class);
-                Intent.putExtra("USER_ID", strUserID);
+                Intent.putExtra("USER_ID", "1");        //todo remember this is temporarily hardcoded to 1
                 startActivity(Intent);
             }
         });
-*/
+
     }
 }
 

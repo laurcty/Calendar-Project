@@ -18,7 +18,6 @@ public class CustomSpan extends DotSpan{
         this.yOffset = yOffset;
     }
 
-    /*Note! The following code is more or less copy-pasted from the DotSpan class. I have commented the changes below.*/
     @Override
     public void drawBackground(Canvas canvas, Paint paint, int left, int right, int top, int baseline,
                                int bottom, CharSequence text, int start, int end, int lnum) {
