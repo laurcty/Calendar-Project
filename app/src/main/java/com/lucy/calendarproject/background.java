@@ -22,12 +22,15 @@ public class background extends AsyncTask<String, Void,String> {
 
     // This class was created with the help of the tutorial https://www.youtube.com/watch?v=4e8be8xseqE&t=19s
 
+    AsyncTaskListener listener;
     AlertDialog dialog;
     Context context;
 
     public background(Context context) {
         this.context = context;
+        listener= (AsyncTaskListener)context;
     }
+
 
     @Override
     protected void onPreExecute() {
@@ -37,7 +40,12 @@ public class background extends AsyncTask<String, Void,String> {
     @Override
     protected void onPostExecute(String s) {
         dialog.setMessage(s);
+        dialog.show();
 
+        System.out.println("I'm in the bit before calling updateResult!!!!!!!!!");
+        listener.updateResult(s);
+
+        /*
         if(s.contains("Login successful")) {
             Intent intent_name = new Intent();
             intent_name.setClass(context.getApplicationContext(),MainActivity.class);
@@ -45,6 +53,8 @@ public class background extends AsyncTask<String, Void,String> {
         }else{
             dialog.show();
         }
+        */
+
     }
     @Override
     protected String doInBackground(String... voids) {
@@ -55,6 +65,8 @@ public class background extends AsyncTask<String, Void,String> {
         String data1 = voids[2];
         String data2 = voids[3];
         String connstr = "http://192.168.1.113:8080/login.php";
+
+        System.out.println("I'm in the doInBackground");
 
         try {
             URL url = new URL(connstr);
@@ -94,6 +106,7 @@ public class background extends AsyncTask<String, Void,String> {
             System.out.println("In the second catch IOException: "+e);
         }
 
+        //listener.updateResult(result);
         return result;
     }
 }

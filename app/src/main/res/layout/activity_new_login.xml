@@ -43,13 +43,13 @@
             android:hint="@string/password" />
 
         <Button
+            android:id="@+id/button_login"
             android:layout_width="150dp"
             android:layout_height="55dp"
             android:layout_marginTop="40dp"
             android:textSize="22sp"
             android:background="#61F5B3DA"
-            android:text="@string/login"
-            android:onClick="loginBtn"/>
+            android:text="@string/login" />
 
 
 </LinearLayout>
