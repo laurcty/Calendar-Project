@@ -13,8 +13,12 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements AsyncTaskListener{
+
+    ArrayList<String> usersGroupsIDs = new ArrayList<String>();
+    String strUsersGroups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,74 +28,10 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
 
         // Get username from intent of activity that called MainActivity
         final String username = getIntent().getStringExtra("USERNAME");
-        //final int userID = Integer.parseInt(strUserID);
 
 
-        // todo Database lookup to create arrayList with groups the user belongs to
         background bg = new background (MainActivity.this);
-        bg.execute("username","blank",username,"blank","whichFunction");        // Blank is used as a placeholder since this SQL only needs one variable
-
-
-
-        ArrayList<String> usersGroups = new ArrayList<String>();
-        DatabaseHelper db = new DatabaseHelper(MainActivity.this);
-        usersGroups = db.getGroupsOfCurrentUser(1);          //todo remember this is temporarily hardcoded to 1
-
-        // Get id of radio group
-        final RadioGroup rg = (RadioGroup) findViewById(R.id.myRadioGroup);
-
-        // Populate radio group with groups by looping over ArrayList usersGroups
-        for(int i=0;i<usersGroups.size();i++){
-
-            // Get name of group to add
-            String groupName = usersGroups.get(i);
-
-            // Initialize a new RadioButton
-            RadioButton radioButton = new RadioButton(getApplicationContext());
-
-            // Set padding of radio button
-            radioButton.setPadding(28,0,0,0);
-
-            // Set text of radio button
-            radioButton.setTextAppearance(MainActivity.this, android.R.style.TextAppearance_DeviceDefault_Medium);
-            radioButton.setText(groupName);
-
-            radioButton.setButtonDrawable(R.drawable.radio_button_selector);
-
-            // Add radio button to group
-            rg.addView(radioButton);
-
-        }
-
-
-        // Change to viewGroup page when button clicked
-        Button viewGroup = (Button) findViewById(R.id.viewGroup);
-        viewGroup.setOnClickListener( new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                int radioButtonId = rg.getCheckedRadioButtonId();
-                RadioButton rb = (RadioButton) findViewById(radioButtonId);
-
-                try {
-                    String groupName = rb.getText().toString();
-                    if(radioButtonId!=-1) {
-                        Intent Intent = new Intent(MainActivity.this, ViewGroup.class);
-                        Intent.putExtra("NAME_OF_GROUP", groupName);
-                        startActivity(Intent);
-                    }else{
-                        // Error - no group selected
-                        Toast.makeText(MainActivity.this, "No group selected", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e){
-                    // Goes in here if rb content is null
-                    Toast.makeText(MainActivity.this, "No group selected", Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-        });
-
+        bg.execute("username","blank",username,"blank","findGroupsOfUser");        // Blank is used as a placeholder since this SQL only needs one variable
 
 
         // Change to createGroup page when button clicked
@@ -123,9 +63,65 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
     // This method gets called after background.java finishes
     @Override
     public void updateResult(String result){
-        System.out.println("I'm in the updateResult method!!!!!");
-        //changeActivity(result);
+        //System.out.println("I'm in the updateResult method!!!!!");
+        System.out.println("The result is: "+result);
+        displayGroups(usersGroupsIDs,result);
     }
 
-}
+    public void displayGroups(ArrayList<String> usersGroups, String result) {
+        result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
+        usersGroupsIDs = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
 
+        // Get id of radio group
+        final RadioGroup rg = (RadioGroup) findViewById(R.id.myRadioGroup);
+
+        // Populate radio group with groups by looping over ArrayList usersGroups
+        for(int i=0;i<usersGroups.size();i++){
+
+            // Get name of group to add
+            String groupName = usersGroups.get(i);
+
+            // Initialize a new RadioButton
+            RadioButton radioButton = new RadioButton(getApplicationContext());
+
+            // Set padding of radio button
+            radioButton.setPadding(28,0,0,0);
+
+            // Set text of radio button
+            radioButton.setTextAppearance(MainActivity.this, android.R.style.TextAppearance_DeviceDefault_Medium);
+            radioButton.setText(groupName);
+
+            radioButton.setButtonDrawable(R.drawable.radio_button_selector);
+
+            // Add radio button to group
+            rg.addView(radioButton);
+
+        }
+
+        // Change to viewGroup page when button clicked
+        Button viewGroup = (Button) findViewById(R.id.viewGroup);
+        viewGroup.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                int radioButtonId = rg.getCheckedRadioButtonId();
+                RadioButton rb = (RadioButton) findViewById(radioButtonId);
+
+                try {
+                    String groupName = rb.getText().toString();
+                    if(radioButtonId!=-1) {
+                        Intent Intent = new Intent(MainActivity.this, ViewGroup.class);
+                        Intent.putExtra("NAME_OF_GROUP", groupName);
+                        startActivity(Intent);
+                    }else{
+                        // Error - no group selected
+                        Toast.makeText(MainActivity.this, "No group selected", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e){
+                    // Goes in here if rb content is null
+                    Toast.makeText(MainActivity.this, "No group selected", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+}
