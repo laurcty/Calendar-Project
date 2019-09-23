@@ -20,7 +20,7 @@ import java.net.URLEncoder;
 
 public class background extends AsyncTask<String, Void,String> {
 
-    // This class was created with the help of the tutorial https://www.youtube.com/watch?v=4e8be8xseqE&t=19s
+    // This class was created with the help of the YouTube video https://www.youtube.com/watch?v=4e8be8xseqE&t=19s
 
     AsyncTaskListener listener;
     AlertDialog dialog;
@@ -31,31 +31,21 @@ public class background extends AsyncTask<String, Void,String> {
         listener= (AsyncTaskListener)context;
     }
 
-
     @Override
     protected void onPreExecute() {
-        dialog = new AlertDialog.Builder(context).create();
-        dialog.setTitle("Login Status");
+        //dialog = new AlertDialog.Builder(context).create();
+        //dialog.setTitle("Login Status");
     }
+
     @Override
     protected void onPostExecute(String s) {
-        dialog.setMessage(s);
-        dialog.show();
+        //dialog.setMessage(s);
+        //dialog.show();
 
         System.out.println("I'm in the bit before calling updateResult!!!!!!!!!");
         listener.updateResult(s);
-
-        /*
-        if(s.contains("Login successful")) {
-            Intent intent_name = new Intent();
-            intent_name.setClass(context.getApplicationContext(),MainActivity.class);
-            context.startActivity(intent_name);
-        }else{
-            dialog.show();
-        }
-        */
-
     }
+
     @Override
     protected String doInBackground(String... voids) {
 
@@ -64,6 +54,7 @@ public class background extends AsyncTask<String, Void,String> {
         String columnName2 = voids[1];
         String data1 = voids[2];
         String data2 = voids[3];
+        String whichFunction = voids[4];
         String connstr = "http://192.168.1.113:8080/login.php";
 
         System.out.println("I'm in the doInBackground");
@@ -78,7 +69,9 @@ public class background extends AsyncTask<String, Void,String> {
             OutputStream ops = http.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops,"UTF-8"));
             String data = URLEncoder.encode(columnName1,"UTF-8")+"="+URLEncoder.encode(data1,"UTF-8")
-                    +"&&"+URLEncoder.encode(columnName2,"UTF-8")+"="+URLEncoder.encode(data2,"UTF-8");
+                    +"&&"+URLEncoder.encode(columnName2,"UTF-8")+"="+URLEncoder.encode(data2,"UTF-8")
+                    +"&&"+URLEncoder.encode("whichFunction","UTF-8")+"="+URLEncoder.encode(whichFunction,"UTF-8");
+
             writer.write(data);
             writer.flush();
             writer.close();

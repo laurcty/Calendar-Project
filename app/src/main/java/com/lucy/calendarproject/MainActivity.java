@@ -14,23 +14,28 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AsyncTaskListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-/*
-        // Get userID
-        final String strUserID = getIntent().getStringExtra("USER_ID");
-        final int userID = Integer.parseInt(strUserID);
-*/
 
-        // Database lookup to create arrayList with groups the user belongs to
+        // Get username from intent of activity that called MainActivity
+        final String username = getIntent().getStringExtra("USERNAME");
+        //final int userID = Integer.parseInt(strUserID);
+
+
+        // todo Database lookup to create arrayList with groups the user belongs to
+        background bg = new background (MainActivity.this);
+        bg.execute("username","blank",username,"blank","whichFunction");        // Blank is used as a placeholder since this SQL only needs one variable
+
+
+
         ArrayList<String> usersGroups = new ArrayList<String>();
         DatabaseHelper db = new DatabaseHelper(MainActivity.this);
-        usersGroups= db.getGroupsOfCurrentUser(1);          //todo remember this is temporarily hardcoded to 1
+        usersGroups = db.getGroupsOfCurrentUser(1);          //todo remember this is temporarily hardcoded to 1
 
         // Get id of radio group
         final RadioGroup rg = (RadioGroup) findViewById(R.id.myRadioGroup);
@@ -114,5 +119,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    // This method gets called after background.java finishes
+    @Override
+    public void updateResult(String result){
+        System.out.println("I'm in the updateResult method!!!!!");
+        //changeActivity(result);
+    }
+
 }
 

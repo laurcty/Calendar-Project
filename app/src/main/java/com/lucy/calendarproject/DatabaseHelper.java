@@ -312,7 +312,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<String> usersGroups = new ArrayList<String>();
         String strUserID = Integer.toString(userID);
         SQLiteDatabase db=this.getReadableDatabase();
-        Cursor cursor = db.query("userGroups", new String[] { "groupID"}, "userID = ? ", new String[] {strUserID}, null, null, null);
+        Cursor cursor = db.query("userGroups", new String[] {"groupID"}, "userID = ? ", new String[] {strUserID}, null, null, null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()) {
             int usersGroupID = cursor.getInt(0);
