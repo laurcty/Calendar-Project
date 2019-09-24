@@ -68,56 +68,35 @@ import static com.lucy.calendarproject.R.id.bestDateNoUsers1;
 
 import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.SELECTION_MODE_MULTIPLE;
 
-
-
-public class ViewGroup extends AppCompatActivity {
+public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
 
     // Set up hash map to link dates to how many users have that date
     HashMap<CalendarDay, Integer> hashMap = new HashMap<CalendarDay, Integer>();
+
+    ArrayList<String> usersInGroup = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_group);
-        ArrayList<TextView> namesArray = new ArrayList<>();
-        namesArray.add((TextView) findViewById(R.id.viewGroupName1));
-        namesArray.add((TextView) findViewById(R.id.viewGroupName2));
-        namesArray.add((TextView) findViewById(R.id.viewGroupName3));
-        namesArray.add((TextView) findViewById(R.id.viewGroupName4));
-        namesArray.add((TextView) findViewById(R.id.viewGroupName5));
-        namesArray.add((TextView) findViewById(R.id.viewGroupName6));
-        namesArray.add((TextView) findViewById(R.id.viewGroupName7));
-        namesArray.add((TextView) findViewById(R.id.viewGroupName8));
 
-        ArrayList<String> datesArray = new ArrayList<>();
 
         // Get the ID (corresponding to position in radioGroup) of the chosen group
-        String groupName = getIntent().getStringExtra("NAME_OF_GROUP");
+        String groupID = getIntent().getStringExtra("GROUP_ID");
         TextView groupIDText = (TextView) findViewById(R.id.GroupID);
-        groupIDText.setText("Group: " + groupName);
+        groupIDText.setText("Group: " + groupID);
 
-        // Get ID of group and populate arrayList with users in the group
-        DatabaseHelper db = new DatabaseHelper(ViewGroup.this);
-        int groupID = db.getGroupID(groupName);
-        ArrayList<String> usersInGroup = new ArrayList<>();
-        usersInGroup = db.getUsersInGroup(groupID);
 
-        // Add names of users in group to scrollView at top and save their calendars in strings
-        String dates = "";
-        for(int i=0;i<usersInGroup.size();i++) {
-            namesArray.get(i).setText((" " + usersInGroup.get(i) + " "));
-            int userID = db.getUserID(usersInGroup.get(i));
-            datesArray.add(db.getCalendarDates(userID));    // Now holds free dates for each individual user in respective index
-        }
+        //todo get users from groupID
+        background bg = new background(ViewGroup.this);
+        bg.execute("groupID", "blank", groupID, "blank", "getUsersInGroup");
 
-        addCustomDecorators(usersInGroup.size(), datesArray);
 
         // Create popup window when findDate button pressed
         Button findDate = (Button) findViewById(R.id.findDate);
         findDate.setOnClickListener( new View.OnClickListener() {
 
             @Override
-
             public void onClick(View v) {
                 // Inflate layout
                 LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -154,6 +133,7 @@ public class ViewGroup extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     public void addCustomDecorators(int noUsersInGroup, ArrayList<String> datesArray){
@@ -298,5 +278,36 @@ public class ViewGroup extends AppCompatActivity {
         }catch(Exception e){
             // User has no dates in calendar
         }
+    }
+
+    // This method gets called after background.java finishes
+    @Override
+    public void updateResult(String result){
+        System.out.println("I'm in the updateResult method!!!!!");
+        System.out.println("The result is "+result);
+        result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
+        usersInGroup = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
+
+        ArrayList<TextView> namesArray = new ArrayList<>();
+        namesArray.add((TextView) findViewById(R.id.viewGroupName1));
+        namesArray.add((TextView) findViewById(R.id.viewGroupName2));
+        namesArray.add((TextView) findViewById(R.id.viewGroupName3));
+        namesArray.add((TextView) findViewById(R.id.viewGroupName4));
+        namesArray.add((TextView) findViewById(R.id.viewGroupName5));
+        namesArray.add((TextView) findViewById(R.id.viewGroupName6));
+        namesArray.add((TextView) findViewById(R.id.viewGroupName7));
+        namesArray.add((TextView) findViewById(R.id.viewGroupName8));
+
+        ArrayList<String> datesArray = new ArrayList<>();
+
+        // Add names of users in group to scrollView at top and save their calendars in strings
+        for(int i=0;i<usersInGroup.size();i++) {
+            System.out.println("I'm adding users to usersInGroup!!");
+            namesArray.get(i).setText((" " + usersInGroup.get(i) + " "));
+            //String calendarDates = DATABASE LOOKUP TO FIND DATES FROM USERNAME
+            //datesArray.add(calendarDates);    // Now holds free dates for each individual user in respective index
+        }
+
+        //addCustomDecorators(usersInGroup.size(), datesArray);
     }
 }

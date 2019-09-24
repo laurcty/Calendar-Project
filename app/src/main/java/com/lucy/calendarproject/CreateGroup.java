@@ -18,9 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class CreateGroup extends AppCompatActivity {
+public class CreateGroup extends AppCompatActivity implements AsyncTaskListener {
     ArrayList<String> users=new ArrayList<String>();
     int userAddedCounter =1;
     ArrayList<String> addedUsers=new ArrayList<String>();
@@ -31,16 +32,12 @@ public class CreateGroup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_group);
 
-        // Get userID of person logged in
-        final String strUserID = getIntent().getStringExtra("USER_ID");
-        final int userID = Integer.parseInt(strUserID);
+        // Get username of person logged in
+        final String username = getIntent().getStringExtra("USERNAME");
 
-        // Find username from userID of person logged in
-        DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
-        final String username = dbHelper.getUsername(userID);
+        background bg = new background(CreateGroup.this);
+        bg.execute("blank","blank","blank","blank","getAllUsers");      // Blanks due to no vars needing to be passed
 
-        openAndQueryDatabase(username);
-        displayResultList();
 
         final TextView name1 = (TextView) findViewById(R.id.name1);
         final TextView name2 = (TextView) findViewById(R.id.name2);
@@ -61,7 +58,6 @@ public class CreateGroup extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Object o = listView.getItemAtPosition(position);
                 String selectedUser = o.toString();
-
 
                 // Validate to ensure same user only added to group once
                 if(!addedUsers.contains(selectedUser)) {
@@ -142,8 +138,9 @@ public class CreateGroup extends AppCompatActivity {
 
                     // Switch back to main activity
                     Intent Intent = new Intent(CreateGroup.this, MainActivity.class);
-                    Intent.putExtra("USER_ID", strUserID);
+                    Intent.putExtra("USERNAME", username);
                     startActivity(Intent);
+
                 }else if(strGroupName.equals("")){
                     Toast.makeText(CreateGroup.this, "Please enter a group name", Toast.LENGTH_SHORT).show();
                 }else if(!free){
@@ -156,41 +153,15 @@ public class CreateGroup extends AppCompatActivity {
 
     }
 
-    private void openAndQueryDatabase(String username) {
-        try {
-            DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
-            SQLiteDatabase newDB = dbHelper.getWritableDatabase();
+    // This method gets called after background.java finishes
+    @Override
+    public void updateResult(String result){
+        System.out.println("I'm in the updateResult method!!!!!");
+        result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
+        users = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
 
-
-            Cursor c = newDB.rawQuery("SELECT username FROM " +
-                    "users" +
-                    " where ID>0", null);
-
-            if (c != null ) {
-                if  (c.moveToFirst()) {
-                    do {
-                        String user = c.getString(c.getColumnIndex("username"));
-                        // Don't add user if user = username of person logged in
-                        if(!user.equals(username)){
-                            users.add(user);
-                        }
-
-                    }while (c.moveToNext());
-                }
-            }
-        } catch (SQLiteException se ) {
-            Log.e(getClass().getSimpleName(), "Could not create or Open the database");
-        }
-
-    }
-
-    private void displayResultList() {
         ListView lv = (ListView) findViewById(R.id.userListView);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                users );
-
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, users);
         lv.setAdapter(arrayAdapter);
     }
 }

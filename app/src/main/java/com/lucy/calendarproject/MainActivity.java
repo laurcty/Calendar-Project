@@ -18,21 +18,17 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity implements AsyncTaskListener{
 
     ArrayList<String> usersGroupsIDs = new ArrayList<String>();
-    String strUsersGroups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         // Get username from intent of activity that called MainActivity
         final String username = getIntent().getStringExtra("USERNAME");
 
-
         background bg = new background (MainActivity.this);
         bg.execute("username","blank",username,"blank","findGroupsOfUser");        // Blank is used as a placeholder since this SQL only needs one variable
-
 
         // Change to createGroup page when button clicked
         Button createGroup = (Button) findViewById(R.id.createGroup);
@@ -41,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
             @Override
             public void onClick(View v) {
                 Intent Intent = new Intent(MainActivity.this, CreateGroup.class);
-                Intent.putExtra("USER_ID", "1");        //todo remember this is temporarily hardcoded to 1
+                Intent.putExtra("USERNAME", username);
                 startActivity(Intent);
             }
         });
@@ -53,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
             @Override
             public void onClick(View view) {
                 Intent Intent = new Intent(MainActivity.this, ViewCalendar.class);
-                Intent.putExtra("USER_ID", "1");        //todo remember this is temporarily hardcoded to 1
+                Intent.putExtra("USERNAME", username);
                 startActivity(Intent);
             }
         });
@@ -68,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
         displayGroups(usersGroupsIDs,result);
     }
 
-    public void displayGroups(ArrayList<String> usersGroups, String result) {
+    public void displayGroups(ArrayList<String> usersGroupsIDs, String result) {
         result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
         usersGroupsIDs = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
 
@@ -76,10 +72,10 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
         final RadioGroup rg = (RadioGroup) findViewById(R.id.myRadioGroup);
 
         // Populate radio group with groups by looping over ArrayList usersGroups
-        for(int i=0;i<usersGroups.size();i++){
+        for(int i=0;i<usersGroupsIDs.size();i++){
 
             // Get name of group to add
-            String groupName = usersGroups.get(i);
+            String groupName = usersGroupsIDs.get(i);
 
             // Initialize a new RadioButton
             RadioButton radioButton = new RadioButton(getApplicationContext());
@@ -93,9 +89,9 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
 
             radioButton.setButtonDrawable(R.drawable.radio_button_selector);
 
+            System.out.println("I think I'm adding a radio button that says "+groupName);
             // Add radio button to group
             rg.addView(radioButton);
-
         }
 
         // Change to viewGroup page when button clicked
@@ -108,10 +104,10 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
                 RadioButton rb = (RadioButton) findViewById(radioButtonId);
 
                 try {
-                    String groupName = rb.getText().toString();
+                    String groupID = rb.getText().toString();
                     if(radioButtonId!=-1) {
                         Intent Intent = new Intent(MainActivity.this, ViewGroup.class);
-                        Intent.putExtra("NAME_OF_GROUP", groupName);
+                        Intent.putExtra("GROUP_ID", groupID);
                         startActivity(Intent);
                     }else{
                         // Error - no group selected

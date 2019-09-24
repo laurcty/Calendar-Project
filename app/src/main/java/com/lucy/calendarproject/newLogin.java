@@ -42,7 +42,7 @@ public class newLogin extends AppCompatActivity implements AsyncTaskListener{
         if(result.contains("Login successful")) {
             Toast.makeText(newLogin.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
             Intent Intent = new Intent(newLogin.this, MainActivity.class);
-            Intent.putExtra("USERNAME", usr.getText().toString()); //todo hardcoded temporarily to 1
+            Intent.putExtra("USERNAME", usr.getText().toString());
             startActivity(Intent);
         }else{
             Toast.makeText(newLogin.this, "Username or password not correct", Toast.LENGTH_SHORT).show();

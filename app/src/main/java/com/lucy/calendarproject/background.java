@@ -33,15 +33,10 @@ public class background extends AsyncTask<String, Void,String> {
 
     @Override
     protected void onPreExecute() {
-        //dialog = new AlertDialog.Builder(context).create();
-        //dialog.setTitle("Login Status");
     }
 
     @Override
     protected void onPostExecute(String s) {
-        //dialog.setMessage(s);
-        //dialog.show();
-
         System.out.println("I'm in the bit before calling updateResult!!!!!!!!!");
         listener.updateResult(s);
     }
@@ -99,7 +94,6 @@ public class background extends AsyncTask<String, Void,String> {
             System.out.println("In the second catch IOException: "+e);
         }
 
-        //listener.updateResult(result);
         return result;
     }
 }
