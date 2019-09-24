@@ -304,6 +304,8 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         for(int i=0;i<usersInGroup.size();i++) {
             System.out.println("I'm adding users to usersInGroup!!");
             namesArray.get(i).setText((" " + usersInGroup.get(i) + " "));
+
+
             //String calendarDates = DATABASE LOOKUP TO FIND DATES FROM USERNAME
             //datesArray.add(calendarDates);    // Now holds free dates for each individual user in respective index
         }

@@ -117,14 +117,18 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
             @Override
             public void onClick(View view) {
                 // Create group in groups table
-                DatabaseHelper db = new DatabaseHelper(CreateGroup.this);
+                //DatabaseHelper db = new DatabaseHelper(CreateGroup.this);
                 EditText groupName = (EditText)findViewById(R.id.edittext_groupname);
                 String strGroupName = groupName.getText().toString().trim();
-                Boolean free = db.checkGroupFree(strGroupName);
+                //Boolean free = db.checkGroupFree(strGroupName);
 
-                if(!strGroupName.equals("") && addedUsers.size()>=2 && free) {
-                    db.addGroup(strGroupName, addedUsers.size());
+                if(!strGroupName.equals("") && addedUsers.size()>=2) {
+                    //db.addGroup(strGroupName, addedUsers.size());
+                    String strNoUsers = Integer.toString(addedUsers.size());
+                    background bg2 = new background(CreateGroup.this);
+                    bg2.execute("groupName","noUsers",strGroupName,strNoUsers,"createGroup");
 
+                    /*
                     // Get ID of group that has been just created (since it is set as an autoincrement field in userGroups table)
                     int createdGroupID = db.getGroupID(strGroupName);
 
@@ -135,6 +139,7 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
                         addedUserID = db.getUserID(addedUserName);
                         db.addUserGroupLink(addedUserID, createdGroupID);
                     }
+                    */
 
                     // Switch back to main activity
                     Intent Intent = new Intent(CreateGroup.this, MainActivity.class);
@@ -143,8 +148,6 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
 
                 }else if(strGroupName.equals("")){
                     Toast.makeText(CreateGroup.this, "Please enter a group name", Toast.LENGTH_SHORT).show();
-                }else if(!free){
-                    Toast.makeText(CreateGroup.this, "Group name is taken", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(CreateGroup.this, "Group cannot have only one user", Toast.LENGTH_SHORT).show();
                 }
@@ -157,11 +160,19 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
     @Override
     public void updateResult(String result){
         System.out.println("I'm in the updateResult method!!!!!");
-        result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
-        users = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
+        System.out.println("The result of CreateGroup thing is "+result);
 
-        ListView lv = (ListView) findViewById(R.id.userListView);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, users);
-        lv.setAdapter(arrayAdapter);
+        if(!result.contains("CREATEGROUP")) {
+            // Goes in here if db lookup returned a value i.e. this call was from bg not bg2
+            result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
+            users = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
+
+            ListView lv = (ListView) findViewById(R.id.userListView);
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, users);
+            lv.setAdapter(arrayAdapter);
+        }else{
+            // This call was from bg2
+
+        }
     }
 }
