@@ -87,7 +87,6 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         groupIDText.setText("Group: " + groupID);
 
 
-        //todo get users from groupID
         background bg = new background(ViewGroup.this);
         bg.execute("groupID", "blank", groupID, "blank", "getUsersInGroup");
 
@@ -264,9 +263,13 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
     public void setUpHashMap(HashMap<CalendarDay, Integer> hashMap, String dates){
         // Split user's calendar into CalendarDays
         try {
-            String[] userDates = dates.split(",");
+
+            String[] userDates = dates.split("\\s*,\\s*");
+            System.out.println("I'm setting up the hashMap");
+            System.out.println("The string of dates before splitting is "+dates);
             for (int j = 0; j < userDates.length; j++) {
                 // If date already in hashMap, increment number mapped to that date, if not add new entry of date and map to number one
+                System.out.println("Date "+j+" is "+userDates[j]);
                 String[] DMY = userDates[j].split("-");
                 int year = Integer.parseInt(DMY[2]);
                 int month = Integer.parseInt(DMY[1]);
@@ -280,12 +283,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         }
     }
 
-    // This method gets called after background.java finishes
-    @Override
-    public void updateResult(String result){
-        System.out.println("I'm in the updateResult method!!!!!");
-        System.out.println("The result is "+result);
-        result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
+    public void setUpUsersInGroup(String result){
         usersInGroup = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
 
         ArrayList<TextView> namesArray = new ArrayList<>();
@@ -298,18 +296,34 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         namesArray.add((TextView) findViewById(R.id.viewGroupName7));
         namesArray.add((TextView) findViewById(R.id.viewGroupName8));
 
-        ArrayList<String> datesArray = new ArrayList<>();
 
         // Add names of users in group to scrollView at top and save their calendars in strings
         for(int i=0;i<usersInGroup.size();i++) {
             System.out.println("I'm adding users to usersInGroup!!");
             namesArray.get(i).setText((" " + usersInGroup.get(i) + " "));
-
-
-            //String calendarDates = DATABASE LOOKUP TO FIND DATES FROM USERNAME
-            //datesArray.add(calendarDates);    // Now holds free dates for each individual user in respective index
         }
 
-        //addCustomDecorators(usersInGroup.size(), datesArray);
+        background bg2 = new background(ViewGroup.this);
+        bg2.execute("usernames", "blank", result, "blank", "getGroupCalendarDates");
+
+    }
+
+
+    // This method gets called after background.java finishes
+    @Override
+    public void updateResult(String result){
+        System.out.println("I'm in the updateResult method!!!!!");
+        //System.out.println("The result is "+result);
+        if(result.contains("GROUPCALENDARDATES")){
+            // bg2 has called this and returned calendar dates of all people in group
+            result = result.substring(19, result.length() - 1);
+            //ArrayList<String> datesArray = new ArrayList<>();
+            ArrayList<String> datesArray = new ArrayList<String>(Arrays.asList(result.split("/")));
+            addCustomDecorators(usersInGroup.size(), datesArray);
+        }else{
+            result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
+            setUpUsersInGroup(result);
+        }
+
     }
 }
