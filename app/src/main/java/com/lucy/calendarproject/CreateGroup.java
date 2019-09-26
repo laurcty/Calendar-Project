@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,7 +27,6 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
     int userAddedCounter =1;
     ArrayList<String> addedUsers=new ArrayList<String>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +37,6 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
 
         background bg = new background(CreateGroup.this);
         bg.execute("blank","blank","blank","blank","getAllUsers");      // Blanks due to no vars needing to be passed
-
 
         final TextView name1 = (TextView) findViewById(R.id.name1);
         final TextView name2 = (TextView) findViewById(R.id.name2);
@@ -117,10 +116,8 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
             @Override
             public void onClick(View view) {
                 // Create group in groups table
-                //DatabaseHelper db = new DatabaseHelper(CreateGroup.this);
                 EditText groupName = (EditText)findViewById(R.id.edittext_groupname);
                 String strGroupName = groupName.getText().toString().trim();
-                //Boolean free = db.checkGroupFree(strGroupName);
 
                 if(!strGroupName.equals("") && addedUsers.size()>=2) {
                     //db.addGroup(strGroupName, addedUsers.size());
@@ -128,23 +125,11 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
                     background bg2 = new background(CreateGroup.this);
                     bg2.execute("groupName","noUsers",strGroupName,strNoUsers,"createGroup");
 
-                    /*
+
                     // Get ID of group that has been just created (since it is set as an autoincrement field in userGroups table)
-                    int createdGroupID = db.getGroupID(strGroupName);
+                    background bg3 = new background(CreateGroup.this);
+                    bg3.execute("groupName", "blank", strGroupName, "blank","getGroupID");
 
-                    String addedUserName;
-                    int addedUserID = 0;
-                    for (int i = 0; i < addedUsers.size(); i++) {
-                        addedUserName = addedUsers.get(i);
-                        addedUserID = db.getUserID(addedUserName);
-                        db.addUserGroupLink(addedUserID, createdGroupID);
-                    }
-                    */
-
-                    // Switch back to main activity
-                    Intent Intent = new Intent(CreateGroup.this, MainActivity.class);
-                    Intent.putExtra("USERNAME", username);
-                    startActivity(Intent);
 
                 }else if(strGroupName.equals("")){
                     Toast.makeText(CreateGroup.this, "Please enter a group name", Toast.LENGTH_SHORT).show();
@@ -156,13 +141,41 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
 
     }
 
+    public void addUserGroupsLink(String groupID){
+        System.out.println(" GROUP ID IS: "+groupID);
+
+        // Would use String.join but requires min api26 which I can't use for my conn to work
+        StringBuilder nameBuilder = new StringBuilder();
+        for (String n : addedUsers) {
+            nameBuilder.append("'").append(n.replace("'", "\\'")).append("',");
+        }
+        nameBuilder.deleteCharAt(nameBuilder.length() - 1);
+        String strAddedUsers= nameBuilder.toString();
+
+        System.out.println(" THE ADDEDUSERS STRING IS: "+strAddedUsers);
+        background bg4 = new background(CreateGroup.this);
+        bg4.execute("addedUsers", "groupID", strAddedUsers, groupID, "addUserGroupLinks");
+
+        // Switch back to main activity
+        Intent Intent = new Intent(CreateGroup.this, MainActivity.class);
+        final String username = getIntent().getStringExtra("USERNAME");
+        Intent.putExtra("USERNAME", username);
+        startActivity(Intent);
+    }
+
     // This method gets called after background.java finishes
     @Override
     public void updateResult(String result){
         System.out.println("I'm in the updateResult method!!!!!");
         System.out.println("The result of CreateGroup thing is "+result);
 
-        if(!result.contains("CREATEGROUP")) {
+        if(result.contains("CREATEGROUP")) {
+            // This call was from bg2
+        }else if(result.contains("GETGROUPID")){
+            // This call was from bg3
+            result = result.substring(10, result.length());
+            addUserGroupsLink(result);
+        }else{
             // Goes in here if db lookup returned a value i.e. this call was from bg not bg2
             result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
             users = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
@@ -170,9 +183,6 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
             ListView lv = (ListView) findViewById(R.id.userListView);
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, users);
             lv.setAdapter(arrayAdapter);
-        }else{
-            // This call was from bg2
-
         }
     }
 }

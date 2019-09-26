@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
     public void updateResult(String result){
         //System.out.println("I'm in the updateResult method!!!!!");
         System.out.println("The result is: "+result);
-        displayGroups(usersGroupsIDs,result);
+        //displayGroups(usersGroupsIDs,result);
     }
 
     public void displayGroups(ArrayList<String> usersGroupsIDs, String result) {

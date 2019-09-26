@@ -10,59 +10,60 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Register extends AppCompatActivity {
-    EditText mTextUsername;
-    EditText mTextPassword;
-    EditText mTextCnfPassword;
-    Button mButtonRegister;
-    TextView mTextViewLogin;
-    DatabaseHelper db;
+public class Register extends AppCompatActivity implements AsyncTaskListener{
+    EditText textUsername;
+    EditText textPassword;
+    EditText textCnfPassword;
+    Button buttonRegister;
+    TextView textViewLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
 
-        db = new DatabaseHelper(this);
-        mTextUsername = (EditText)findViewById(R.id.edittext_username);
-        mTextPassword = (EditText)findViewById(R.id.edittext_password);
-        mTextCnfPassword = (EditText)findViewById(R.id.edittext_cnf_password);
-        mButtonRegister = (Button) findViewById(R.id.button_register);
-        mTextViewLogin = (TextView) findViewById(R.id.textview_login);
+        textUsername = (EditText)findViewById(R.id.edittext_username);
+        textPassword = (EditText)findViewById(R.id.edittext_password);
+        textCnfPassword = (EditText)findViewById(R.id.edittext_cnf_password);
+        buttonRegister = (Button) findViewById(R.id.button_register);
+        textViewLogin = (TextView) findViewById(R.id.textview_login);
 
-        mTextViewLogin.setOnClickListener(new View.OnClickListener() {
+        textViewLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(Register.this, Login.class));
             }
         });
 
-        mButtonRegister.setOnClickListener(new View.OnClickListener() {
+        buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String user = mTextUsername.getText().toString().trim();
-                String pwd = mTextPassword.getText().toString().trim();
-                String cnf_pwd = mTextCnfPassword.getText().toString().trim();
+                String user = textUsername.getText().toString().trim();
+                String pwd = textPassword.getText().toString().trim();
+                String cnf_pwd = textCnfPassword.getText().toString().trim();
 
                 if(pwd.equals(cnf_pwd)){
-                    long val = db.addUser(user, pwd);
-                    if(val>0){
-                        Toast.makeText(Register.this, "Successfully registered", Toast.LENGTH_SHORT).show();
-                        Intent moveToLogin = new Intent(Register.this, Login.class);
-                        startActivity(moveToLogin);
-                    }
-                    else if(val==0){
-                        Toast.makeText(Register.this, "Username already exists", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Toast.makeText(Register.this, "Registration error", Toast.LENGTH_SHORT).show();
-                    }
-
+                    background bg = new background(Register.this);
+                    bg.execute("username", "password", user, pwd, "registerUser");
                 }else{
                     Toast.makeText(Register.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
 
+    // This method gets called after background.java finishes
+    @Override
+    public void updateResult(String result){
+        System.out.println("I'm in the updateResult method!!!!!");
+        System.out.println(result);
+        System.out.println("After printing result");
+        if(result.contains("USERNAME TAKEN")){
+            Toast.makeText(Register.this, "Username already exists", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(Register.this, "Successfully registered", Toast.LENGTH_SHORT).show();
+            Intent moveToLogin = new Intent(Register.this, newLogin.class);
+            startActivity(moveToLogin);
+        }
     }
 }

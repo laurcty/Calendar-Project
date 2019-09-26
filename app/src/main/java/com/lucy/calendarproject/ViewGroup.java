@@ -80,16 +80,13 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_group);
 
-
         // Get the ID (corresponding to position in radioGroup) of the chosen group
         String groupID = getIntent().getStringExtra("GROUP_ID");
         TextView groupIDText = (TextView) findViewById(R.id.GroupID);
         groupIDText.setText("Group: " + groupID);
 
-
         background bg = new background(ViewGroup.this);
         bg.execute("groupID", "blank", groupID, "blank", "getUsersInGroup");
-
 
         // Create popup window when findDate button pressed
         Button findDate = (Button) findViewById(R.id.findDate);
@@ -177,7 +174,6 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
                 }catch(Exception e){
                     // currDay is null
                 }
-
             try {
                 calendar.addDecorators(decoratorArray);
                 calendar.invalidateDecorators();
@@ -263,7 +259,6 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
     public void setUpHashMap(HashMap<CalendarDay, Integer> hashMap, String dates){
         // Split user's calendar into CalendarDays
         try {
-
             String[] userDates = dates.split("\\s*,\\s*");
             System.out.println("I'm setting up the hashMap");
             System.out.println("The string of dates before splitting is "+dates);
@@ -296,7 +291,6 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         namesArray.add((TextView) findViewById(R.id.viewGroupName7));
         namesArray.add((TextView) findViewById(R.id.viewGroupName8));
 
-
         // Add names of users in group to scrollView at top and save their calendars in strings
         for(int i=0;i<usersInGroup.size();i++) {
             System.out.println("I'm adding users to usersInGroup!!");
@@ -305,7 +299,6 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
 
         background bg2 = new background(ViewGroup.this);
         bg2.execute("usernames", "blank", result, "blank", "getGroupCalendarDates");
-
     }
 
 
@@ -324,6 +317,5 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
             result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
             setUpUsersInGroup(result);
         }
-
     }
 }

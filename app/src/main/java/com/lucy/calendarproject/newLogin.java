@@ -7,22 +7,24 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class newLogin extends AppCompatActivity implements AsyncTaskListener{
 
     EditText pas,usr;
     Button loginBtn;
+    TextView textViewRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_login);
 
-
         usr = (EditText) findViewById(R.id.username);
         pas = (EditText) findViewById(R.id.password);
         loginBtn = (Button) findViewById(R.id.button_login);
+        textViewRegister = (TextView) findViewById(R.id.textview_register);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,6 +35,13 @@ public class newLogin extends AppCompatActivity implements AsyncTaskListener{
                 // Set up connection and return result via AsyncTaskListener to updateResult method
                 background bg = new background(newLogin.this);
                 bg.execute("username","password",user,pass,"login");
+            }
+        });
+
+        textViewRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(newLogin.this, Register.class));
             }
         });
     }
