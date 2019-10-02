@@ -280,6 +280,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
 
     public void setUpUsersInGroup(String result){
         usersInGroup = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
+        System.out.println(usersInGroup);
 
         ArrayList<TextView> namesArray = new ArrayList<>();
         namesArray.add((TextView) findViewById(R.id.viewGroupName1));
@@ -291,7 +292,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         namesArray.add((TextView) findViewById(R.id.viewGroupName7));
         namesArray.add((TextView) findViewById(R.id.viewGroupName8));
 
-        // Add names of users in group to scrollView at top and save their calendars in strings
+        // Add names of users in group to scrollView at top
         for(int i=0;i<usersInGroup.size();i++) {
             System.out.println("I'm adding users to usersInGroup!!");
             namesArray.get(i).setText((" " + usersInGroup.get(i) + " "));
@@ -306,12 +307,13 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
     @Override
     public void updateResult(String result){
         System.out.println("I'm in the updateResult method!!!!!");
-        //System.out.println("The result is "+result);
+        System.out.println("The result is "+result);
         if(result.contains("GROUPCALENDARDATES")){
             // bg2 has called this and returned calendar dates of all people in group
             result = result.substring(19, result.length() - 1);
-            //ArrayList<String> datesArray = new ArrayList<>();
             ArrayList<String> datesArray = new ArrayList<String>(Arrays.asList(result.split("/")));
+            System.out.println("datesArray is "+datesArray);
+            System.out.println("The size of datesArray is: "+datesArray.size());
             addCustomDecorators(usersInGroup.size(), datesArray);
         }else{
             result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)

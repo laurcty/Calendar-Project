@@ -18,6 +18,7 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity implements AsyncTaskListener{
 
     ArrayList<String> usersGroupsIDs = new ArrayList<String>();
+    ArrayList<String> retrievedGroupNames = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
 
         background bg = new background (MainActivity.this);
         bg.execute("username","blank",username,"blank","findGroupsOfUser");        // Blank is used as a placeholder since this SQL only needs one variable
+
+
 
         // Change to createGroup page when button clicked
         Button createGroup = (Button) findViewById(R.id.createGroup);
@@ -61,21 +64,31 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
     public void updateResult(String result){
         //System.out.println("I'm in the updateResult method!!!!!");
         System.out.println("The result is: "+result);
-        //displayGroups(usersGroupsIDs,result);
+
+        if(result.contains("1")) {      // if retrieving result from bg
+            result = result.substring(1, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
+            usersGroupsIDs = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
+            String groupIDsString = usersGroupsIDs.toString().replace(", ", ",".replaceAll("[\\[.\\]]", ""));
+            background bg2 = new background(MainActivity.this);
+            bg2.execute("groupIDs", "blank", groupIDsString, "blank", "getGroupNamesFromIDs");
+
+        }else {         // if retrieving result from bg2
+            retrievedGroupNames = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
+            displayGroups(retrievedGroupNames, result);
+        }
     }
 
-    public void displayGroups(ArrayList<String> usersGroupsIDs, String result) {
-        result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
-        usersGroupsIDs = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
+    public void displayGroups(ArrayList<String> retrievedGroupNames, String result) {
+
 
         // Get id of radio group
         final RadioGroup rg = (RadioGroup) findViewById(R.id.myRadioGroup);
 
-        // Populate radio group with groups by looping over ArrayList usersGroups
-        for(int i=0;i<usersGroupsIDs.size();i++){
+        // Populate radio group with groups by looping over ArrayList retrievedGroupNames
+        for(int i=0;i<retrievedGroupNames.size();i++){
 
             // Get name of group to add
-            String groupName = usersGroupsIDs.get(i);
+            String groupName = retrievedGroupNames.get(i);
 
             // Initialize a new RadioButton
             RadioButton radioButton = new RadioButton(getApplicationContext());
