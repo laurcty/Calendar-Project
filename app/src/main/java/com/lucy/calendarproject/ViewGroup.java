@@ -81,12 +81,14 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         setContentView(R.layout.view_group);
 
         // Get the ID (corresponding to position in radioGroup) of the chosen group
-        String groupID = getIntent().getStringExtra("GROUP_ID");
+        String groupName = getIntent().getStringExtra("GROUP_NAME");
         TextView groupIDText = (TextView) findViewById(R.id.GroupID);
-        groupIDText.setText("Group: " + groupID);
+        groupIDText.setText("Group: " + groupName);
 
-        background bg = new background(ViewGroup.this);
-        bg.execute("groupID", "blank", groupID, "blank", "getUsersInGroup");
+        // Get ID of group from groupName
+        background bg3 = new background (ViewGroup.this);
+        bg3.execute("groupName", "blank", groupName, "blank","getGroupID");
+
 
         // Create popup window when findDate button pressed
         Button findDate = (Button) findViewById(R.id.findDate);
@@ -315,6 +317,10 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
             System.out.println("datesArray is "+datesArray);
             System.out.println("The size of datesArray is: "+datesArray.size());
             addCustomDecorators(usersInGroup.size(), datesArray);
+        }else if(result.contains("GETGROUPID")){
+            String groupID = result.substring(10, result.length());
+            background bg = new background(ViewGroup.this);
+            bg.execute("groupID", "blank", groupID, "blank", "getUsersInGroup");
         }else{
             result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
             setUpUsersInGroup(result);

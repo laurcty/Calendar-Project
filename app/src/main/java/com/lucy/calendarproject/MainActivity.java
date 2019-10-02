@@ -65,10 +65,14 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
         //System.out.println("I'm in the updateResult method!!!!!");
         System.out.println("The result is: "+result);
 
-        if(result.contains("1")) {      // if retrieving result from bg
-            result = result.substring(1, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
+        if(result.contains("fgou")) {      // if retrieving result from bg
+            result = result.substring(4, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
             usersGroupsIDs = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
-            String groupIDsString = usersGroupsIDs.toString().replace(", ", ",".replaceAll("[\\[.\\]]", ""));
+            String groupIDsString = usersGroupsIDs.toString();
+            groupIDsString = groupIDsString.substring(1, groupIDsString.length() - 1);
+            //TODO REMOVE SPACES FROM STRING
+            groupIDsString = groupIDsString.replaceAll("\\s+","");
+            System.out.println("The String of groupIDs is "+groupIDsString);
             background bg2 = new background(MainActivity.this);
             bg2.execute("groupIDs", "blank", groupIDsString, "blank", "getGroupNamesFromIDs");
 
@@ -79,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
     }
 
     public void displayGroups(ArrayList<String> retrievedGroupNames, String result) {
-
 
         // Get id of radio group
         final RadioGroup rg = (RadioGroup) findViewById(R.id.myRadioGroup);
@@ -117,10 +120,10 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
                 RadioButton rb = (RadioButton) findViewById(radioButtonId);
 
                 try {
-                    String groupID = rb.getText().toString();
+                    String groupName = rb.getText().toString();
                     if(radioButtonId!=-1) {
                         Intent Intent = new Intent(MainActivity.this, ViewGroup.class);
-                        Intent.putExtra("GROUP_ID", groupID);
+                        Intent.putExtra("GROUP_NAME", groupName);
                         startActivity(Intent);
                     }else{
                         // Error - no group selected
