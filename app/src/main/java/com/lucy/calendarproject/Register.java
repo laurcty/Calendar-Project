@@ -41,6 +41,7 @@ public class Register extends AppCompatActivity implements AsyncTaskListener{
                 String user = textUsername.getText().toString().trim();
                 String pwd = textPassword.getText().toString().trim();
                 String cnf_pwd = textCnfPassword.getText().toString().trim();
+                //TODO hash and validate passwords
 
                 if(pwd.equals(cnf_pwd)){
                     background bg = new background(Register.this);

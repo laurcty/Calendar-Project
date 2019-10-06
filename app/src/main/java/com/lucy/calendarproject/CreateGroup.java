@@ -26,6 +26,8 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
     ArrayList<String> users=new ArrayList<String>();
     int userAddedCounter =1;
     ArrayList<String> addedUsers=new ArrayList<String>();
+    String username;
+    String strGroupName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +35,7 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
         setContentView(R.layout.create_group);
 
         // Get username of person logged in
-        final String username = getIntent().getStringExtra("USERNAME");
+        username = getIntent().getStringExtra("USERNAME");
 
         background bg = new background(CreateGroup.this);
         bg.execute("blank","blank","blank","blank","getAllUsers");      // Blanks due to no vars needing to be passed
@@ -91,23 +93,6 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
                     Toast.makeText(CreateGroup.this, "User cannot be added twice", Toast.LENGTH_SHORT).show();
                 }
 
-                //todo make it so that you can take a user out of the group when you click it in the scrollview at the top
-
-
-                // Can't remove name1 from group as that is the user who is logged in
-                name2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // Remove name from addedUsers arrayList
-                        //addedUsers.remove(addedUsers.indexOf(name2.getText()));   //todo this doesn't work
-
-                        // Remove name from listView
-                        name2.setText("");
-
-                        // Subtract one from addedUsersCounter
-                        userAddedCounter--;
-                    }
-                });
             }
         });
 
@@ -117,18 +102,18 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
             public void onClick(View view) {
                 // Create group in groups table
                 EditText groupName = (EditText)findViewById(R.id.edittext_groupname);
-                String strGroupName = groupName.getText().toString().trim();
+                strGroupName = groupName.getText().toString().trim();
 
                 if(!strGroupName.equals("") && addedUsers.size()>=2) {
-                    //db.addGroup(strGroupName, addedUsers.size());
-                    String strNoUsers = Integer.toString(addedUsers.size());
+                    //String strNoUsers = Integer.toString(addedUsers.size());
                     background bg2 = new background(CreateGroup.this);
-                    bg2.execute("groupName","noUsers",strGroupName,strNoUsers,"createGroup");
+                    bg2.execute("groupName","groupOwner",strGroupName,username,"createGroup");
 
+                    //todo shouldn't need this anymore-
 
                     // Get ID of group that has been just created (since it is set as an autoincrement field in userGroups table)
-                    background bg3 = new background(CreateGroup.this);
-                    bg3.execute("groupName", "blank", strGroupName, "blank","getGroupID");
+                    //background bg3 = new background(CreateGroup.this);
+                    //bg3.execute("groupName", "blank", strGroupName, "blank","getGroupID");
 
 
                 }else if(strGroupName.equals("")){
@@ -141,8 +126,8 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
 
     }
 
-    public void addUserGroupsLink(String groupID){
-        System.out.println(" GROUP ID IS: "+groupID);
+    public void addUserGroupsLink(){
+        //System.out.println(" GROUP ID IS: "+groupID);
 
         // Would use String.join but requires min api26 which I can't use for my conn to work
         StringBuilder nameBuilder = new StringBuilder();
@@ -154,7 +139,8 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
 
         System.out.println(" THE ADDEDUSERS STRING IS: "+strAddedUsers);
         background bg4 = new background(CreateGroup.this);
-        bg4.execute("addedUsers", "groupID", strAddedUsers, groupID, "addUserGroupLinks");
+        String groupNameAndOwner = strGroupName + "-" + username;
+        bg4.execute("addedUsers", "groupNameAndOwner", strAddedUsers, groupNameAndOwner, "addUserGroupLinks");
 
         // Switch back to main activity
         Intent Intent = new Intent(CreateGroup.this, MainActivity.class);
@@ -169,12 +155,13 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
         System.out.println("I'm in the updateResult method!!!!!");
         System.out.println("The result of CreateGroup thing is "+result);
 
-        if(result.contains("CREATEGROUP")) {
+        if(result.contains("CREATEGROUP")){
             // This call was from bg2
+            addUserGroupsLink();
         }else if(result.contains("GETGROUPID")){
             // This call was from bg3
             result = result.substring(10, result.length());
-            addUserGroupsLink(result);
+            //addUserGroupsLink(result);
         }else{
             // Goes in here if db lookup returned a value i.e. this call was from bg not bg2
             result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)

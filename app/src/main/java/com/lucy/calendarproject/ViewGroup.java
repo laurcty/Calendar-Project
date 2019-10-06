@@ -64,7 +64,7 @@ import java.util.Map;
 
 
 
-import static com.lucy.calendarproject.R.id.bestDateNoUsers1;
+//import static com.lucy.calendarproject.R.id.popup_window.xml;
 
 import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.SELECTION_MODE_MULTIPLE;
 
@@ -82,13 +82,13 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
 
         // Get the ID (corresponding to position in radioGroup) of the chosen group
         String groupName = getIntent().getStringExtra("GROUP_NAME");
-        TextView groupIDText = (TextView) findViewById(R.id.GroupID);
-        groupIDText.setText("Group: " + groupName);
+        String groupNameAndOwner = getIntent().getStringExtra("GROUP_NAME_AND_OWNER");
 
-        // Get ID of group from groupName
-        background bg3 = new background (ViewGroup.this);
-        bg3.execute("groupName", "blank", groupName, "blank","getGroupID");
+        TextView groupNameText = (TextView) findViewById(R.id.GroupID);
+        groupNameText.setText("Group: " + groupName);
 
+        background bg = new background(ViewGroup.this);
+        bg.execute("groupNameAndOwner", "blank", groupNameAndOwner, "blank", "getUsersInGroup");      //todo leaving to get curry next thing you gotta do is change php for this lookup
 
         // Create popup window when findDate button pressed
         Button findDate = (Button) findViewById(R.id.findDate);
@@ -105,30 +105,38 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
                 int height = LinearLayout.LayoutParams.WRAP_CONTENT;
                 boolean focusable = true;       // Means popup disappears when you tap outside it
                 final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-                try {
-                    HashMap<CalendarDay, Integer> sortedHashMap = getBestDate();
-                    Map.Entry<CalendarDay, Integer> hashMapData = sortedHashMap.entrySet().iterator().next();
-                    CalendarDay bestDate = hashMapData.getKey();
-                    int noPeopleBusy = hashMapData.getValue();
-                    int day = bestDate.getDay();
-                    int month = bestDate.getMonth();
-                    int year = bestDate.getYear();
-                    String formattedDate = day + "-" + (month + 1) + "-" + year;
+                    // Function call to get hash map with best dates in it
+                    LinkedHashMap<CalendarDay, Integer> sortedHashMap = getBestDate();
 
-                    // Change textViews
-                    TextView popupTitle = (TextView) popupWindow.getContentView().findViewById(R.id.popupTitle);
+                    TextView popupTitle = (TextView) popupWindow.getContentView().findViewById(R.id.Title);
                     popupTitle.setText("Best dates:");
-                    TextView tvBestDate = (TextView) popupWindow.getContentView().findViewById(R.id.BestDate1);
-                    tvBestDate.setText(formattedDate);
-                    TextView nextBestDate = (TextView) popupWindow.getContentView().findViewById(R.id.BestDate2);
-                    nextBestDate.setText(noPeopleBusy);
+
+                    ArrayList<TextView> textViews = new ArrayList<>();
+                    textViews.add((TextView) popupWindow.getContentView().findViewById(R.id.bestDate1));
+                    textViews.add((TextView) popupWindow.getContentView().findViewById(R.id.bestDate2));
+                    textViews.add((TextView) popupWindow.getContentView().findViewById(R.id.bestDate3));
+                    textViews.add((TextView) popupWindow.getContentView().findViewById(R.id.bestDate4));
+                    textViews.add((TextView) popupWindow.getContentView().findViewById(R.id.bestDate5));
+
+                    int counter = 0;
+                    for (Map.Entry<CalendarDay, Integer> entry : sortedHashMap.entrySet()) {
+                        if(counter>=5){         // Break out of loop if all textViews have been filled
+                            break;
+                        }
+                        CalendarDay bestDate = entry.getKey();
+                        int noPeopleBusy = entry.getValue();
+                        int day = bestDate.getDay();
+                        int month = bestDate.getMonth();
+                        int year = bestDate.getYear();
+                        String formattedDate = day + "-" + (month + 1) + "-" + year;
+                        String strToDisplay = formattedDate + "       " + noPeopleBusy;
+                        textViews.get(counter).setText(strToDisplay);
+                        counter++;
+                    }
 
                     // Show popupWindow
                     popupWindow.showAtLocation(v, Gravity.CENTER, 0, -400);
-                }catch (Exception e){
-                    // No dates selected
-                    Toast.makeText(ViewGroup.this, "Please select a range of dates.", Toast.LENGTH_SHORT).show();
-                }
+
             }
         });
 
@@ -185,8 +193,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         }
     }
 
-    public HashMap<CalendarDay, Integer> getBestDate(){
-        // todo print more than one good date, along with how many people are free on each date that is chosen by algorithm
+    public LinkedHashMap<CalendarDay, Integer> getBestDate(){
 
         // Store selected dates in list
         final MaterialCalendarView calendar = (MaterialCalendarView) findViewById(R.id.calendarView);
@@ -196,7 +203,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         HashMap<CalendarDay, Integer> selectedDatesHashMap = new HashMap<CalendarDay, Integer>();
 
         // Set up LINKED hash map (retains order elements were added in) which will be the final one to store sorted dates
-        HashMap<CalendarDay, Integer> sortedHashMap = new LinkedHashMap<CalendarDay, Integer>();
+        LinkedHashMap<CalendarDay, Integer> sortedHashMap = new LinkedHashMap<CalendarDay, Integer>();
 
         // Loop around array of selected dates to find those which are not in the hashMap (everyone is free)
         for (CalendarDay date : selectedDates) {
@@ -210,9 +217,10 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         }
 
         // Store all elements of hashMap in a LinkedList
-        List<Map.Entry<CalendarDay, Integer> > list = new LinkedList<Map.Entry<CalendarDay, Integer> >(selectedDatesHashMap.entrySet());
+        List<Map.Entry<CalendarDay, Integer>> list = new LinkedList<Map.Entry<CalendarDay, Integer> >(selectedDatesHashMap.entrySet());
 
         // Sort the LinkedList based on the integers mapped to each date
+        //todo change this code to a written out merge sort
         Collections.sort(list, new Comparator<Map.Entry<CalendarDay, Integer> >() {
             public int compare(Map.Entry<CalendarDay, Integer> o1,
                                Map.Entry<CalendarDay, Integer> o2)
@@ -317,10 +325,8 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
             System.out.println("datesArray is "+datesArray);
             System.out.println("The size of datesArray is: "+datesArray.size());
             addCustomDecorators(usersInGroup.size(), datesArray);
-        }else if(result.contains("GETGROUPID")){
-            String groupID = result.substring(10, result.length());
-            background bg = new background(ViewGroup.this);
-            bg.execute("groupID", "blank", groupID, "blank", "getUsersInGroup");
+        //}else if(result.contains("GETGROUPID")){
+        //    String groupID = result.substring(10, result.length());
         }else{
             result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
             setUpUsersInGroup(result);

@@ -50,8 +50,8 @@ public class background extends AsyncTask<String, Void,String> {
         String data1 = voids[2];
         String data2 = voids[3];
         String whichFunction = voids[4];
-        String connstr = "http://192.168.43.47:8080/login.php";   //moto phone routed network
-        //String connstr = "http://192.168.1.113:8080/login.php";     //home network
+        //String connstr = "http://192.168.43.47:8080/login.php";   //moto phone routed network
+        String connstr = "http://192.168.1.113:8080/login.php";     //home network
         //String connstr = "http://10.10.44.39:8080/login.php";
 
         System.out.println("I'm in the doInBackground");
