@@ -205,6 +205,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         // Set up LINKED hash map (retains order elements were added in) which will be the final one to store sorted dates
         LinkedHashMap<CalendarDay, Integer> sortedHashMap = new LinkedHashMap<CalendarDay, Integer>();
 
+
         // Loop around array of selected dates to find those which are not in the hashMap (everyone is free)
         for (CalendarDay date : selectedDates) {
             if(hashMap.containsKey(date)){
@@ -219,20 +220,26 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         // Store all elements of hashMap in a LinkedList
         List<Map.Entry<CalendarDay, Integer>> list = new LinkedList<Map.Entry<CalendarDay, Integer> >(selectedDatesHashMap.entrySet());
 
-        // Sort the LinkedList based on the integers mapped to each date
-        //todo change this code to a written out merge sort
-        Collections.sort(list, new Comparator<Map.Entry<CalendarDay, Integer> >() {
-            public int compare(Map.Entry<CalendarDay, Integer> o1,
-                               Map.Entry<CalendarDay, Integer> o2)
+        linkedList li = new linkedList();
 
-            {
-                return (o1.getValue()).compareTo(o2.getValue());
-            }
-        });
+        for (int i=0;i<=list.size()-1;i++){
+            List<CalendarDay> keys = new LinkedList<CalendarDay>(selectedDatesHashMap.keySet());
+            List<Integer> values = new LinkedList<Integer>(selectedDatesHashMap.values());
+            System.out.println("I'm trying to push a date which is "+keys.get(i)+" "+values.get(i));
+            li.push(keys.get(i),values.get(i));
+        }
 
-        // Enter sorted dates into linked hash map
-        for (Map.Entry<CalendarDay, Integer> listData : list) {
-            sortedHashMap.put(listData.getKey(), listData.getValue());
+        // Apply merge Sort
+        li.head = li.mergeSort(li.head);
+        System.out.println("\n Sorted Linked List is: \n");
+
+        //li.printList(li.head);
+
+        while (li.head != null) {
+            System.out.println(li.head.date + ": " + li.head.val + " ");
+            sortedHashMap.put(li.head.date, li.head.val);
+            li.head = li.head.next;
+
         }
         return sortedHashMap;
     }
