@@ -44,13 +44,11 @@ public class ViewCalendar extends AppCompatActivity implements AsyncTaskListener
         // Get dates in user's calendar and add decorators to them
         background bg = new background(ViewCalendar.this);
         bg.execute("username","blank",username,"blank","getCalendarDates");
-
     }
 
     public void setUpCalendar(String result){
         // Get id of calendarView
         final MaterialCalendarView calendar = (MaterialCalendarView) findViewById(R.id.calendarView);
-
         try {
             String[] datesInCalendar = result.split(",");
 

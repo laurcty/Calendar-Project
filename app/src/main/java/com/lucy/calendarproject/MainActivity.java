@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -16,14 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements AsyncTaskListener{
-
     //todo check that comments are all good
-    //todo validation
     //todo clear up blank space and unused imports etc.
-    //todo draw out new designs of pages so that xml can be described and can say why the design is good + link to objectives
+    //todo sort out php, to remove unused functions
     //todo sort out variable names i.e. content view ones start with btn. and stuff
-    //todo pass group owner of selected group to view group but idk how to do it so fuck me I guess
-
+    //todo make access private where possible
 
     ArrayList<String> usersGroupsIDs = new ArrayList<String>();
     ArrayList<String> groupNames = new ArrayList<String>();
@@ -81,16 +79,18 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
             groupIDsString = groupIDsString.replaceAll("\\s+","");
             System.out.println("The String of groupIDs is "+groupIDsString);
 
-            //background bg2 = new background(MainActivity.this);
-            //bg2.execute("groupIDs", "blank", groupIDsString, "blank", "getGroupNamesFromIDs");
-
             groupNamesAndOwners = new ArrayList<String>(Arrays.asList(groupIDsString.split("\\s*,\\s*")));
-            for(int i=0;i<=groupNamesAndOwners.size()-1;i++){
-                String groupNameAndOwner = groupNamesAndOwners.get(i);
-                String groupName = groupNameAndOwner.substring(0, groupNameAndOwner.indexOf("-"));
-                groupNames.add(groupName);
+            try {
+                for (int i = 0; i <= groupNamesAndOwners.size() - 1; i++) {
+                    String groupNameAndOwner = groupNamesAndOwners.get(i);
+                    String groupName = groupNameAndOwner.substring(0, groupNameAndOwner.indexOf("-"));
+                    groupNames.add(groupName);
+                }
+                displayGroups(groupNames, groupIDsString);
+            }catch(Exception e){
+                // User doesn't have any groups yet
+                Toast.makeText(MainActivity.this, "You don't have any groups yet- click on CREATE GROUP to get started.", Toast.LENGTH_LONG).show();
             }
-            displayGroups(groupNames, groupIDsString);
 
 
         }else {         // if retrieving result from bg2
@@ -103,7 +103,9 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
 
         // Get id of radio group
         final RadioGroup rg = (RadioGroup) findViewById(R.id.myRadioGroup);
-        rg.removeAllViews();    // Ensure radio group is empty, used to fix error when new group is created
+
+        LinearLayout linearLayout = findViewById(R.id.rootContainer);
+
 
         // Populate radio group with groups by looping over ArrayList retrievedGroupNames
         for(int i=0;i<retrievedGroupNames.size();i++){
@@ -118,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
             radioButton.setText(groupName);
             radioButton.setButtonDrawable(R.drawable.radio_button_selector);
 
-            System.out.println("I think I'm adding a radio button that says "+groupName);
+            System.out.println("Adding a radio button that says "+groupName);
 
             // Add radio button to group
             rg.addView(radioButton);
@@ -133,19 +135,14 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
                 int radioButtonId = rg.getCheckedRadioButtonId();
                 try {
                     String groupName = groupNames.get(radioButtonId-1);
-                    if(radioButtonId!=-1) {
                         Intent Intent = new Intent(MainActivity.this, ViewGroup.class);
                         Intent.putExtra("GROUP_NAME", groupName);
                         String selectedGroupNameAndOwner = groupNamesAndOwners.get(radioButtonId-1);
                         Intent.putExtra("GROUP_NAME_AND_OWNER", selectedGroupNameAndOwner);
                         startActivity(Intent);
-                    }else{
-                        // Error - no group selected
-                        Toast.makeText(MainActivity.this, "No group selected", Toast.LENGTH_SHORT).show();
-                    }
                 } catch (Exception e){
-                    // Goes in here if rb content is null
                     Toast.makeText(MainActivity.this, "No group selected", Toast.LENGTH_SHORT).show();
+                    System.out.println("the error is " +e);
                 }
             }
         });

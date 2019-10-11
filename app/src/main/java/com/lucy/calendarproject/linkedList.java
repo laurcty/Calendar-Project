@@ -1,11 +1,7 @@
-// Java program to illustrate merge sorted
-// of linkedList
-
 package com.lucy.calendarproject;
-
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
-public class linkedList {
+class linkedList {
     node head;
 
     static class node {
@@ -13,15 +9,13 @@ public class linkedList {
         int val;
         node next;
 
-        public node(CalendarDay date,int val)
-        {
+        private node(CalendarDay date,int val){
             this.date = date;
             this.val = val;
         }
     }
 
-    node sortedMerge(node a, node b)
-    {
+    private node sortedMerge(node a, node b){
         node result = null;
 
         // Goes into here if they're already sorted
@@ -31,11 +25,11 @@ public class linkedList {
             return a;
 
         /* Pick either a or b, and recur */
-        if (a.val <= b.val) {
+        if (a.val <= b.val){
             result = a;
             result.next = sortedMerge(a.next, b);
         }
-        else {
+        else{
             result = b;
             result.next = sortedMerge(a, b.next);
         }
@@ -71,7 +65,7 @@ public class linkedList {
     }
 
     // Utility function to get the middle of the linked list
-    public static node getMiddle(node head)
+    private static node getMiddle(node head)
     {
         if (head == null)
             return head;
@@ -85,8 +79,7 @@ public class linkedList {
         return slow;
     }
 
-    void push(CalendarDay date, int new_data)
-    {
+    void push(CalendarDay date, int new_data){
         /* allocate node */
         node new_node = new node(date, new_data);
 
@@ -132,4 +125,3 @@ public class linkedList {
     */
 }
 
-// This code is contributed by Rishabh Mahrsee

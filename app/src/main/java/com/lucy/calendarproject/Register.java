@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.lucy.calendarproject.newLogin.hash;
+
 public class Register extends AppCompatActivity implements AsyncTaskListener{
     EditText textUsername;
     EditText textPassword;
@@ -41,12 +43,37 @@ public class Register extends AppCompatActivity implements AsyncTaskListener{
                 String user = textUsername.getText().toString().trim();
                 String pwd = textPassword.getText().toString().trim();
                 String cnf_pwd = textCnfPassword.getText().toString().trim();
-                //TODO hash and validate passwords
 
-                if(pwd.equals(cnf_pwd)){
+                // Validation checks to ensure username is between 1 and 15 characters in length
+                boolean userValid= true;
+                if(user.length()>=16||user.length()==0){
+                    Toast.makeText(Register.this, "Username must be between 1 and 15 characters in length", Toast.LENGTH_LONG).show();
+                    userValid=false;
+                }
+
+                // Validation checks to ensure password is valid
+                boolean hasUppercase = !pwd.equals(pwd.toLowerCase());
+                boolean passwordValid= true;
+
+                if(pwd.length()<=5){
+                    Toast.makeText(Register.this, "Password must be at least 6 characters", Toast.LENGTH_LONG).show();
+                    passwordValid = false;
+                }else if(!hasUppercase && !(pwd.matches(".*\\d.*"))){
+                    Toast.makeText(Register.this, "Password must contain a capital letter or number", Toast.LENGTH_LONG).show();
+                    passwordValid = false;
+                }
+
+                if(pwd.equals(cnf_pwd)&&passwordValid&&userValid){
+
+                    // Hash password
+                    String hashedPass = hash(pwd);
+                    System.out.println("The hashed password is: "+hashedPass);
+
+                    // Create new record in users database
                     background bg = new background(Register.this);
-                    bg.execute("username", "password", user, pwd, "registerUser");
-                }else{
+                    bg.execute("username", "password", user, hashedPass, "registerUser");
+
+                }else if (!pwd.equals(cnf_pwd)){
                     Toast.makeText(Register.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                 }
             }

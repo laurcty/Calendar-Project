@@ -10,6 +10,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+
 public class newLogin extends AppCompatActivity implements AsyncTaskListener{
 
     EditText pas,usr;
@@ -32,9 +35,13 @@ public class newLogin extends AppCompatActivity implements AsyncTaskListener{
                 String user = usr.getText().toString();
                 String pass = pas.getText().toString();
 
+                // Hash password
+                String hashedPass = hash(pass);
+                System.out.println("The hashed password is: "+hashedPass);
+
                 // Set up connection and return result via AsyncTaskListener to updateResult method
                 background bg = new background(newLogin.this);
-                bg.execute("username","password",user,pass,"login");
+                bg.execute("username","password",user,hashedPass,"login");
             }
         });
 
@@ -63,5 +70,17 @@ public class newLogin extends AppCompatActivity implements AsyncTaskListener{
     public void updateResult(String result){
         System.out.println("I'm in the updateResult method!!!!!");
         changeActivity(result);
+    }
+
+    public static String hash (String plainText){
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
+            byte[]data = messageDigest.digest(plainText.getBytes());
+            BigInteger bigInteger = new BigInteger(1,data);
+            return bigInteger.toString(16);
+        }catch(Exception e){
+            System.out.println("Hashing failed");
+            return null;
+        }
     }
 }

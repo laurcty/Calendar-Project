@@ -92,7 +92,6 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
                 }else{
                     Toast.makeText(CreateGroup.this, "User cannot be added twice", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
@@ -103,31 +102,29 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
                 // Create group in groups table
                 EditText groupName = (EditText)findViewById(R.id.edittext_groupname);
                 strGroupName = groupName.getText().toString().trim();
+                background bg3 = new background(CreateGroup.this);
+                bg3.execute("groupName","groupOwner",strGroupName,username,"checkGroupName");
 
-                if(!strGroupName.equals("") && addedUsers.size()>=2) {
-                    //String strNoUsers = Integer.toString(addedUsers.size());
-                    background bg2 = new background(CreateGroup.this);
-                    bg2.execute("groupName","groupOwner",strGroupName,username,"createGroup");
-
-                    //todo shouldn't need this anymore-
-
-                    // Get ID of group that has been just created (since it is set as an autoincrement field in userGroups table)
-                    //background bg3 = new background(CreateGroup.this);
-                    //bg3.execute("groupName", "blank", strGroupName, "blank","getGroupID");
-
-
-                }else if(strGroupName.equals("")){
-                    Toast.makeText(CreateGroup.this, "Please enter a group name", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(CreateGroup.this, "Group cannot have only one user", Toast.LENGTH_SHORT).show();
-                }
             }
         });
+    }
 
+    public void createGroup(boolean groupNameUnique){
+        if(!strGroupName.equals("") && addedUsers.size()>=2 && strGroupName.length()<=15 && groupNameUnique) {
+            background bg2 = new background(CreateGroup.this);
+            bg2.execute("groupName","groupOwner",strGroupName,username,"createGroup");
+        }else if(strGroupName.equals("")) {
+            Toast.makeText(CreateGroup.this, "Please enter a group name", Toast.LENGTH_SHORT).show();
+        }else if(strGroupName.length()>=16) {
+            Toast.makeText(CreateGroup.this, "Group name must be less than 16 characters", Toast.LENGTH_SHORT).show();
+        }else if(!groupNameUnique){
+            Toast.makeText(CreateGroup.this, "You have already created a group with this name. Please choose another", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(CreateGroup.this, "Group cannot have only one user", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void addUserGroupsLink(){
-        //System.out.println(" GROUP ID IS: "+groupID);
 
         // Would use String.join but requires min api26 which I can't use for my conn to work
         StringBuilder nameBuilder = new StringBuilder();
@@ -158,14 +155,19 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
         if(result.contains("CREATEGROUP")){
             // This call was from bg2
             addUserGroupsLink();
-        }else if(result.contains("GETGROUPID")){
-            // This call was from bg3
-            result = result.substring(10, result.length());
-            //addUserGroupsLink(result);
+        }else if(result.contains("groupNameInvalid")){
+            // This call was from bg3 and name of group is not valid
+            boolean groupNameValid = false;
+            createGroup(groupNameValid);
+        }else if(result.contains("groupNameValid")){
+            // This call was from bg3 and name of group is valid
+            boolean groupNameValid = true;
+            createGroup(groupNameValid);
         }else{
             // Goes in here if db lookup returned a value i.e. this call was from bg not bg2
             result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
             users = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
+            users.remove(username);
 
             ListView lv = (ListView) findViewById(R.id.userListView);
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, users);

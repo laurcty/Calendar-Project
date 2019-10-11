@@ -88,7 +88,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         groupNameText.setText("Group: " + groupName);
 
         background bg = new background(ViewGroup.this);
-        bg.execute("groupNameAndOwner", "blank", groupNameAndOwner, "blank", "getUsersInGroup");      //todo leaving to get curry next thing you gotta do is change php for this lookup
+        bg.execute("groupNameAndOwner", "blank", groupNameAndOwner, "blank", "getUsersInGroup");
 
         // Create popup window when findDate button pressed
         Button findDate = (Button) findViewById(R.id.findDate);
