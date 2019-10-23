@@ -1,29 +1,14 @@
 package com.lucy.calendarproject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.EventLog;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CalendarView;
-import android.widget.TextView;
-import android.widget.Toast;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.DayViewDecorator;
-import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ViewCalendar extends AppCompatActivity implements AsyncTaskListener{
 
@@ -46,7 +31,7 @@ public class ViewCalendar extends AppCompatActivity implements AsyncTaskListener
         bg.execute("username","blank",username,"blank","getCalendarDates");
     }
 
-    public void setUpCalendar(String result){
+    private void setUpCalendar(String result){
         // Get id of calendarView
         final MaterialCalendarView calendar = (MaterialCalendarView) findViewById(R.id.calendarView);
         try {
@@ -71,11 +56,10 @@ public class ViewCalendar extends AppCompatActivity implements AsyncTaskListener
         }catch(Exception e){
             // User doesn't have any dates yet
         }
-
         changeCalendar();
     }
 
-    public void changeCalendar(){
+    private void changeCalendar(){
         // When add date is clicked
         Button btnAddDecorator = (Button) findViewById(R.id.addDateBtn);
         btnAddDecorator.setOnClickListener(new View.OnClickListener() {
@@ -143,8 +127,6 @@ public class ViewCalendar extends AppCompatActivity implements AsyncTaskListener
     // This method gets called after background.java finishes
     @Override
     public void updateResult(String result){
-        System.out.println("I'm in the updateResult method in ViewCalendar!!!!!");
-        System.out.println("User dates are: "+result);
         if(result.contains("REMOVECALENDARDATE")) {
             changeCalendar();
         }else if(result.contains("ADDCALENDARDATE")){

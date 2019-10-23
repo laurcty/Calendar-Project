@@ -1,6 +1,8 @@
 package com.lucy.calendarproject;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+// created with the help of tutorial https://www.youtube.com/watch?v=jOyYaBHyN28&t=82s
+
 class linkedList {
     node head;
 
@@ -24,32 +26,28 @@ class linkedList {
         if (b == null)
             return a;
 
-        /* Pick either a or b, and recur */
+        // Recursively call sortedMerge for either a or b depending on which is larger
         if (a.val <= b.val){
             result = a;
             result.next = sortedMerge(a.next, b);
-        }
-        else{
+        }else{
             result = b;
             result.next = sortedMerge(a, b.next);
         }
         return result;
     }
 
-    node mergeSort(node h)
-    {
-
-        System.out.println("I'M IN THE MERGE SORT!!");
+    node mergeSort(node h) {
         // Base case : if head is null
         if (h == null || h.next == null) {
             return h;
         }
 
-        // get the middle of the list
+        // Get the middle of the list
         node middle = getMiddle(h);
         node nextofmiddle = middle.next;
 
-        // set the next of middle node to null
+        // Set the next of middle node to null
         middle.next = null;
 
         // Apply mergeSort on left list
@@ -65,8 +63,7 @@ class linkedList {
     }
 
     // Utility function to get the middle of the linked list
-    private static node getMiddle(node head)
-    {
+    private static node getMiddle(node head) {
         if (head == null)
             return head;
 
@@ -80,13 +77,13 @@ class linkedList {
     }
 
     void push(CalendarDay date, int new_data){
-        /* allocate node */
+        // Create new node and pass data into it
         node new_node = new node(date, new_data);
 
-        /* link the old list off the new node */
+        // Link to old list
         new_node.next = head;
 
-        /* move the head to point to the new node */
+        // Move head pointer to new node
         head = new_node;
     }
 

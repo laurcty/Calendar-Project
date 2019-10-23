@@ -1,7 +1,6 @@
 package com.lucy.calendarproject;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,8 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import static com.lucy.calendarproject.newLogin.hash;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 
 public class Register extends AppCompatActivity implements AsyncTaskListener{
     EditText textUsername;
@@ -83,15 +82,24 @@ public class Register extends AppCompatActivity implements AsyncTaskListener{
     // This method gets called after background.java finishes
     @Override
     public void updateResult(String result){
-        System.out.println("I'm in the updateResult method!!!!!");
-        System.out.println(result);
-        System.out.println("After printing result");
         if(result.contains("USERNAME TAKEN")){
             Toast.makeText(Register.this, "Username already exists", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(Register.this, "Successfully registered", Toast.LENGTH_SHORT).show();
-            Intent moveToLogin = new Intent(Register.this, newLogin.class);
+            Intent moveToLogin = new Intent(Register.this, Login.class);
             startActivity(moveToLogin);
+        }
+    }
+
+    private static String hash (String plainText){
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
+            byte[]data = messageDigest.digest(plainText.getBytes());
+            BigInteger bigInteger = new BigInteger(1,data);
+            return bigInteger.toString(16);
+        }catch(Exception e){
+            System.out.println("Hashing failed");
+            return null;
         }
     }
 }

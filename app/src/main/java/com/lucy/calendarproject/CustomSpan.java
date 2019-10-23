@@ -2,7 +2,6 @@ package com.lucy.calendarproject;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 public class CustomSpan extends DotSpan{
@@ -10,7 +9,6 @@ public class CustomSpan extends DotSpan{
     private int xOffset;
     private int yOffset;
     private float radius=15;
-
 
     CustomSpan(int color, int xOffset, int yOffset){
         this.color = color;

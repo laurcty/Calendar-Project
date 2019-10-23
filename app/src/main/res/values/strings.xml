@@ -17,4 +17,6 @@
     <string name="name_group_here">Name group here</string>
     <string name="find_date">Find Date</string>
     <string name="group_id">Group ID</string>
+    <string name="mainActivityHint">Select a group and click VIEW GROUP to find a date to meet up</string>
+    <string name="viewCalendarHint">Use the buttons above to mark all of the days you are busy</string>
 </resources>

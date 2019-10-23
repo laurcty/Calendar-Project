@@ -1,72 +1,24 @@
 package com.lucy.calendarproject;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-
-
-import android.content.Intent;
-
 import android.graphics.Color;
-
 import android.os.Bundle;
-
 import android.view.Gravity;
-
 import android.view.LayoutInflater;
-
-import android.view.MotionEvent;
-
 import android.view.View;
-
 import android.widget.Button;
-
-import android.widget.ImageView;
-
 import android.widget.LinearLayout;
-
 import android.widget.PopupWindow;
-
 import android.widget.TextView;
-
-import android.widget.Toast;
-
-
-
 import com.prolificinteractive.materialcalendarview.CalendarDay;
-
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-
-
-
-import org.w3c.dom.Text;
-
-
-
-import java.lang.reflect.Array;
-
 import java.util.ArrayList;
-
 import java.util.Arrays;
-
-import java.util.Collections;
-
-import java.util.Comparator;
-
 import java.util.HashMap;
-
 import java.util.LinkedHashMap;
-
 import java.util.LinkedList;
-
 import java.util.List;
-
 import java.util.Map;
-
-
-
-//import static com.lucy.calendarproject.R.id.popup_window.xml;
-
-import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.SELECTION_MODE_MULTIPLE;
 
 public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
 
@@ -136,13 +88,11 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
 
                     // Show popupWindow
                     popupWindow.showAtLocation(v, Gravity.CENTER, 0, -400);
-
             }
         });
-
     }
 
-    public void addCustomDecorators(int noUsersInGroup, ArrayList<String> datesArray){
+    private void addCustomDecorators(int noUsersInGroup, ArrayList<String> datesArray){
         // Get id of calendarView
         final MaterialCalendarView calendar = (MaterialCalendarView) findViewById(R.id.calendarView);
         calendar.setSelectionMode(MaterialCalendarView.SELECTION_MODE_RANGE);
@@ -174,7 +124,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
                 }
             }
 
-            CustomEventDecorator[] decoratorArray= setUpDecorators(usersWithThisDate, currDayCount);
+            CustomEventDecorator[] decoratorArray= setUpDecorators(usersWithThisDate);
 
             int counter=0;
             for(int j = 0; j<currDayCount; j++)
@@ -193,7 +143,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         }
     }
 
-    public LinkedHashMap<CalendarDay, Integer> getBestDate(){
+    private LinkedHashMap<CalendarDay, Integer> getBestDate(){
 
         // Store selected dates in list
         final MaterialCalendarView calendar = (MaterialCalendarView) findViewById(R.id.calendarView);
@@ -204,7 +154,6 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
 
         // Set up LINKED hash map (retains order elements were added in) which will be the final one to store sorted dates
         LinkedHashMap<CalendarDay, Integer> sortedHashMap = new LinkedHashMap<CalendarDay, Integer>();
-
 
         // Loop around array of selected dates to find those which are not in the hashMap (everyone is free)
         for (CalendarDay date : selectedDates) {
@@ -225,26 +174,20 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         for (int i=0;i<=list.size()-1;i++){
             List<CalendarDay> keys = new LinkedList<CalendarDay>(selectedDatesHashMap.keySet());
             List<Integer> values = new LinkedList<Integer>(selectedDatesHashMap.values());
-            System.out.println("I'm trying to push a date which is "+keys.get(i)+" "+values.get(i));
             li.push(keys.get(i),values.get(i));
         }
 
         // Apply merge Sort
         li.head = li.mergeSort(li.head);
-        System.out.println("\n Sorted Linked List is: \n");
-
-        //li.printList(li.head);
-
         while (li.head != null) {
             System.out.println(li.head.date + ": " + li.head.val + " ");
             sortedHashMap.put(li.head.date, li.head.val);
             li.head = li.head.next;
-
         }
         return sortedHashMap;
     }
 
-    public CustomEventDecorator[] setUpDecorators(ArrayList<Integer> usersWithThisDate, int currDayCount){
+    private CustomEventDecorator[] setUpDecorators(ArrayList<Integer> usersWithThisDate){
         CustomEventDecorator[] decoratorArray = new CustomEventDecorator[usersWithThisDate.size()];
         // Add decorators to decoratorArray if they should be added i.e. if that colour user has the date in their calendar
         // Use index as a counter to determine which spanType is used upon decorator creation (x position of the decorator)
@@ -263,7 +206,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
 
         for (int i = 1; i <= 8; i++) {
             if (usersWithThisDate.contains(i)) {
-                decoratorArray[index++] = new CustomEventDecorator(Color.rgb(c.get(i-1).get(0), c.get(i-1).get(1), c.get(i-1).get(2)), 12, xSpanType++, ySpanType);
+                decoratorArray[index++] = new CustomEventDecorator(Color.rgb(c.get(i-1).get(0), c.get(i-1).get(1), c.get(i-1).get(2)), xSpanType++, ySpanType);
             }
             if (xSpanType == 4) {
                 xSpanType = 0;
@@ -273,7 +216,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         return decoratorArray;
     }
 
-    public void setUpHashMap(HashMap<CalendarDay, Integer> hashMap, String dates){
+    private void setUpHashMap(HashMap<CalendarDay, Integer> hashMap, String dates){
         // Split user's calendar into CalendarDays
         try {
             String[] userDates = dates.split("\\s*,\\s*");
@@ -295,7 +238,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         }
     }
 
-    public void setUpUsersInGroup(String result){
+    private void setUpUsersInGroup(String result){
         usersInGroup = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
         System.out.println(usersInGroup);
 
@@ -332,8 +275,6 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
             System.out.println("datesArray is "+datesArray);
             System.out.println("The size of datesArray is: "+datesArray.size());
             addCustomDecorators(usersInGroup.size(), datesArray);
-        //}else if(result.contains("GETGROUPID")){
-        //    String groupID = result.substring(10, result.length());
         }else{
             result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
             setUpUsersInGroup(result);
