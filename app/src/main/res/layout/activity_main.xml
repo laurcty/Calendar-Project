@@ -13,16 +13,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="120dp"
                 android:layout_gravity="center_horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="35dp"
-                    android:layout_marginEnd="35dp"
-                    android:text="@string/mainActivityHint"
-                />
 
                 <ScrollView
                     android:layout_width="300dp"
@@ -42,6 +34,7 @@
 
 
     <LinearLayout
+        android:layout_marginStart="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -60,6 +53,17 @@
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:text="@string/create_group" />
+
+        <Button
+            android:id="@+id/helpButton"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_button"
+            android:text="\?"/>
+
+
     </LinearLayout>
 
 

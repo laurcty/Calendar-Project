@@ -91,15 +91,25 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal">
-    <Button
-        android:id="@+id/findDate"
-        android:layout_width="100dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/find_date" />
+
+        <Button
+            android:id="@+id/findDate"
+            android:layout_width="100dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/find_date" />
+
+        <Button
+            android:id="@+id/helpButtonVG"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_button"
+            android:text="\?"/>
 
     </LinearLayout>
 

@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
     ArrayList<String> addedUsers=new ArrayList<String>();
     String username;
     String strGroupName;
+    SearchView searchView;
+    ArrayAdapter<String> arrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,21 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
 
         // Database lookup to get all usernames in users table
         background bg = new background(CreateGroup.this);
-        bg.execute("blank","blank","blank","blank","getAllUsers");      // Blanks due to no vars needing to be passed
+        bg.execute("blank","blank","blank","blank","getAllUsers");      // All blanks due to no vars needing to be passed
+
+        // Set up search bar so that user can search for the usernames they want to add
+        searchView = (SearchView) findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String text) {
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                arrayAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
 
         // Get IDs of TextViews which usernames will be displayed in when the user clicks on a name to add to the group
         final TextView name1 = (TextView) findViewById(R.id.name1);
@@ -100,6 +117,16 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
                 bg3.execute("groupName","groupOwner",strGroupName,username,"checkGroupName");
             }
         });
+
+        // Display hint when button clicked
+        Button helpButton = (Button) findViewById(R.id.helpButtonCG);
+        helpButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(CreateGroup.this, "Use the search bar to search for and select the users you want to add to your group.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void createGroup(boolean groupNameUnique){
@@ -162,7 +189,7 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
             users = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
             users.remove(username);
             ListView lv = (ListView) findViewById(R.id.userListView);
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, users);
+            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, users);
             lv.setAdapter(arrayAdapter);
         }
     }

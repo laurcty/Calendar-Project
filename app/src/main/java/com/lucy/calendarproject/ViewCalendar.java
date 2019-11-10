@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import java.util.ArrayList;
@@ -29,6 +31,16 @@ public class ViewCalendar extends AppCompatActivity implements AsyncTaskListener
         // Get dates in user's calendar and add decorators to them
         background bg = new background(ViewCalendar.this);
         bg.execute("username","blank",username,"blank","getCalendarDates");
+
+        // Display hint when button clicked
+        Button helpButton = (Button) findViewById(R.id.helpButtonVC);
+        helpButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(ViewCalendar.this, "Tap the calendar and use the buttons to mark all of the days you are busy.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void setUpCalendar(String result){

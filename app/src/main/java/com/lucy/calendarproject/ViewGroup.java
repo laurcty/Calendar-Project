@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import java.util.ArrayList;
@@ -63,6 +65,10 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
                     TextView popupTitle = (TextView) popupWindow.getContentView().findViewById(R.id.Title);
                     popupTitle.setText("Best dates:");
 
+                    TextView popupTitle2 = (TextView) popupWindow.getContentView().findViewById(R.id.Title2);
+                    popupTitle2.setText("People busy:");
+
+
                     ArrayList<TextView> textViews = new ArrayList<>();
                     textViews.add((TextView) popupWindow.getContentView().findViewById(R.id.bestDate1));
                     textViews.add((TextView) popupWindow.getContentView().findViewById(R.id.bestDate2));
@@ -88,6 +94,17 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
 
                     // Show popupWindow
                     popupWindow.showAtLocation(v, Gravity.CENTER, 0, -400);
+            }
+        });
+
+
+        // Display hint when button clicked
+        Button helpButton = (Button) findViewById(R.id.helpButtonVG);
+        helpButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(ViewGroup.this, "Tap the start and end dates on the calendar of the dates you want to find a date from before clicking FIND DATE.", Toast.LENGTH_LONG).show();
             }
         });
     }

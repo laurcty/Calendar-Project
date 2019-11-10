@@ -99,24 +99,50 @@
             android:paddingEnd="20dp"/>
     </LinearLayout>
 
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:queryHint="Search for a username">
+    </SearchView>
+
 
     <ListView
         android:layout_gravity="center_horizontal"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/userListView">
     </ListView>
 
 
-    <Button
-        android:id="@+id/makeGroup"
+    <LinearLayout
         android:layout_gravity="center_horizontal"
-        android:layout_height="40dp"
-        android:layout_width="150dp"
-        android:layout_marginTop="40dp"
-        android:background="#41F3BDDC"
-        android:text="@string/create_group"
-        />
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/makeGroup"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="40dp"
+            android:layout_width="150dp"
+            android:layout_marginTop="40dp"
+            android:background="#41F3BDDC"
+            android:text="@string/create_group"
+            />
+
+        <Button
+            android:id="@+id/helpButtonCG"
+            android:layout_marginStart="20dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_button"
+            android:text="\?"/>
+
+    </LinearLayout>
+
 
 </androidx.appcompat.widget.LinearLayoutCompat>

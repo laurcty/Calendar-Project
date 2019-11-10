@@ -13,12 +13,7 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements AsyncTaskListener{
 
-    //todo
-    //      add text to create group "click on usernames to add them to your group".
-    //      make the popup window make sense cause it doesn't
-    //      text in view group to say select a range of dates before clicking view dates
-
-    ArrayList<String> usersGroupsIDs = new ArrayList<String>();
+    ArrayList<String> arrayFromResult = new ArrayList<String>();
     ArrayList<String> groupNames = new ArrayList<String>();
     ArrayList<String> groupNamesAndOwners = new ArrayList<String>();
 
@@ -57,6 +52,16 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
                 startActivity(Intent);
             }
         });
+
+        // Display hint when button clicked
+        Button helpButton = (Button) findViewById(R.id.helpButton);
+        helpButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Select a group and click VIEW GROUP to find a date to meet up. Click on MY CALENDAR to input when you are busy.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     // This method gets called after background.java finishes
@@ -65,12 +70,12 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
         if(result.contains("fgou")) {      // "fgou" (FindGroupsOfUser) means this call is returning the groups which the user belongs to
             // Get groups of user from string into array
             result = result.substring(4, result.length() - 1);
-            usersGroupsIDs = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));   //todo change name of this cause I think it's group name/groupCreator not ID
-            String groupIDsString = usersGroupsIDs.toString();
-            groupIDsString = groupIDsString.substring(1, groupIDsString.length() - 1);
-            groupIDsString = groupIDsString.replaceAll("\\s+", "");
+            arrayFromResult = new ArrayList<String>(Arrays.asList(result.split("\\s*,\\s*")));
+            String resultString = arrayFromResult.toString();
+            resultString = resultString.substring(1, resultString.length() - 1);
+            resultString = resultString.replaceAll("\\s+", "");
 
-            groupNamesAndOwners = new ArrayList<String>(Arrays.asList(groupIDsString.split("\\s*,\\s*")));
+            groupNamesAndOwners = new ArrayList<String>(Arrays.asList(resultString.split("\\s*,\\s*")));
             try {
                 for (int i = 0; i <= groupNamesAndOwners.size() - 1; i++) {
                     // Loop over all groupNamesAndOwners and add names of groups to groupNames arrayList
@@ -78,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
                     String groupName = groupNameAndOwner.substring(0, groupNameAndOwner.indexOf("-"));
                     groupNames.add(groupName);
                 }
-                displayGroups(groupNames, groupIDsString);
+                displayGroups(groupNames);
             } catch (Exception e) {
                 // User doesn't have any groups yet
                 Toast.makeText(MainActivity.this, "You don't have any groups yet- click on CREATE GROUP to get started.", Toast.LENGTH_LONG).show();
@@ -86,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
         }
     }
 
-    private void displayGroups(ArrayList<String> retrievedGroupNames, String result) {      //todo take out result it's redundant
+    private void displayGroups(ArrayList<String> retrievedGroupNames) {
 
         // Get id of radio group
         final RadioGroup rg = (RadioGroup) findViewById(R.id.myRadioGroup);
