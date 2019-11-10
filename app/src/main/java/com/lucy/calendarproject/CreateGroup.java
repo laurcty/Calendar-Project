@@ -146,7 +146,7 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
         }
     }
 
-    private void addUserGroupsLink(){
+    private void addUserGroupsLink(String groupID){
         // Set up string which contains the usernames of those in the new group separated by commas
         // Would use String.join but requires min api26 which I can't use for my connection to work
         StringBuilder nameBuilder = new StringBuilder();
@@ -158,8 +158,7 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
 
         // Add records into userGroups table
         background bg4 = new background(CreateGroup.this);
-        String groupNameAndOwner = strGroupName + "-" + username;
-        bg4.execute("addedUsers", "groupNameAndOwner", strAddedUsers, groupNameAndOwner, "addUserGroupLinks");
+        bg4.execute("addedUsers", "groupID", strAddedUsers, groupID, "addUserGroupLinks");
 
         // Switch back to main activity
         Intent Intent = new Intent(CreateGroup.this, MainActivity.class);
@@ -168,21 +167,31 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
         startActivity(Intent);
     }
 
+    private void getGroupID(){
+        background bg5 = new background(CreateGroup.this);
+        bg5.execute("groupName", "groupOwner", strGroupName, username, "getGroupID");
+    }
+
     // Method is called when doInBackground from any instance of background.java is completed
     @Override
     public void updateResult(String result){
 
         if(result.contains("CREATEGROUP")){
             // This call was from bg2
-            addUserGroupsLink();
+            getGroupID();
         }else if(result.contains("groupNameInvalid")){
             // This call was from bg3 and name of group is not valid
             boolean groupNameValid = false;
             createGroup(groupNameValid);
-        }else if(result.contains("groupNameValid")){
+        }else if(result.contains("groupNameValid")) {
             // This call was from bg3 and name of group is valid
             boolean groupNameValid = true;
             createGroup(groupNameValid);
+        }else if(result.contains("GETGROUPID")){
+            //This call was from bg5 and is returning the groupID
+            result = result.substring(10);
+            System.out.println("groupID is: "+result);
+            addUserGroupsLink(result);
         }else{
             // This call was from bg
             result = result.substring(0, result.length() - 1);      // Remove comma from end of string

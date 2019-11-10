@@ -36,13 +36,13 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
 
         // Get the ID (corresponding to position in radioGroup) of the chosen group
         String groupName = getIntent().getStringExtra("GROUP_NAME");
-        String groupNameAndOwner = getIntent().getStringExtra("GROUP_NAME_AND_OWNER");
+        String groupID = getIntent().getStringExtra("GROUPID");
 
         TextView groupNameText = (TextView) findViewById(R.id.GroupID);
         groupNameText.setText("Group: " + groupName);
 
         background bg = new background(ViewGroup.this);
-        bg.execute("groupNameAndOwner", "blank", groupNameAndOwner, "blank", "getUsersInGroup");
+        bg.execute("groupID", "blank", groupID, "blank", "getUsersInGroup");
 
         // Create popup window when findDate button pressed
         Button findDate = (Button) findViewById(R.id.findDate);
@@ -288,12 +288,13 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         if(result.contains("GROUPCALENDARDATES")){
             // bg2 has called this and returned calendar dates of all people in group
             result = result.substring(19, result.length() - 1);
+            System.out.println("The result of getting dates is: "+result);
             ArrayList<String> datesArray = new ArrayList<String>(Arrays.asList(result.split("/")));
             System.out.println("datesArray is "+datesArray);
             System.out.println("The size of datesArray is: "+datesArray.size());
             addCustomDecorators(usersInGroup.size(), datesArray);
         }else{
-            result = result.substring(0, result.length() - 1);      // Remove comma from end of string (perhaps redundant but oh well)
+            result = result.substring(0, result.length() - 1);      // Remove comma from end of string
             setUpUsersInGroup(result);
         }
     }
