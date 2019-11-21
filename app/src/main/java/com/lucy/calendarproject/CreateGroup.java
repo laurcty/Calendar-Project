@@ -176,17 +176,17 @@ public class CreateGroup extends AppCompatActivity implements AsyncTaskListener 
     @Override
     public void updateResult(String result){
 
-        if(result.contains("CREATEGROUP")){
-            // This call was from bg2
+        if(result.contains("CONNECTION ERROR")||result.contains("Failed to connect")){
+            Toast.makeText(CreateGroup.this, "Error connecting to server, please try again", Toast.LENGTH_SHORT).show();
+        }else if (result.contains("CREATEGROUP")){
+            // This call was from bg2 and has just finished creating the group
             getGroupID();
         }else if(result.contains("groupNameInvalid")){
             // This call was from bg3 and name of group is not valid
-            boolean groupNameValid = false;
-            createGroup(groupNameValid);
+            createGroup(false);
         }else if(result.contains("groupNameValid")) {
             // This call was from bg3 and name of group is valid
-            boolean groupNameValid = true;
-            createGroup(groupNameValid);
+            createGroup(true);
         }else if(result.contains("GETGROUPID")){
             //This call was from bg5 and is returning the groupID
             result = result.substring(10);

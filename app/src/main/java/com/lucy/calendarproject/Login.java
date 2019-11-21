@@ -53,13 +53,15 @@ public class Login extends AppCompatActivity implements AsyncTaskListener{
 
     private void changeActivity(String result){
         System.out.println("connMsg is: "+result);
-        if(result.contains("Login successful")) {
+        if(result.contains("CONNECTION ERROR")||result.contains("Failed to connect")){
+            Toast.makeText(Login.this, "Error connecting to server, please try again", Toast.LENGTH_SHORT).show();
+        }else if(result.contains("Login successful")){
             Toast.makeText(Login.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
             Intent Intent = new Intent(Login.this, MainActivity.class);
             Intent.putExtra("USERNAME", txtUser.getText().toString());
             startActivity(Intent);
         }else{
-            Toast.makeText(Login.this, "Username or password not correct", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Login.this, "Username and password do not match.", Toast.LENGTH_SHORT).show();
         }
     }
 

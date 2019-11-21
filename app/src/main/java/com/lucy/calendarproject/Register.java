@@ -82,7 +82,9 @@ public class Register extends AppCompatActivity implements AsyncTaskListener{
     // This method gets called after background.java finishes
     @Override
     public void updateResult(String result){
-        if(result.contains("USERNAME TAKEN")){
+        if(result.contains("CONNECTION ERROR")||result.contains("Failed to connect")){
+            Toast.makeText(Register.this, "Error connecting to server, please try again", Toast.LENGTH_SHORT).show();
+        }else if(result.contains("USERNAME TAKEN")){
             Toast.makeText(Register.this, "Username already exists", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(Register.this, "Successfully registered", Toast.LENGTH_SHORT).show();

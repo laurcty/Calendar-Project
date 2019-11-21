@@ -237,7 +237,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
         // Split user's calendar into CalendarDays
         try {
             String[] userDates = dates.split("\\s*,\\s*");
-            System.out.println("I'm setting up the hashMap");
+            System.out.println("Setting up the hashMap");
             System.out.println("The string of dates before splitting is "+dates);
             for (int j = 0; j < userDates.length; j++) {
                 // If date already in hashMap, increment number mapped to that date, if not add new entry of date and map to number one
@@ -283,10 +283,11 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
     // This method gets called after background.java finishes
     @Override
     public void updateResult(String result){
-        System.out.println("I'm in the updateResult method!!!!!");
         System.out.println("The result is "+result);
-        if(result.contains("GROUPCALENDARDATES")){
-            // bg2 has called this and returned calendar dates of all people in group
+        if(result.contains("CONNECTION ERROR")||result.contains("Failed to connect")){
+            Toast.makeText(ViewGroup.this, "Error connecting to server, please try again", Toast.LENGTH_SHORT).show();
+        }else if (result.contains("GROUPCALENDARDATES")){
+            // This call is returning calendar dates of everyone in group
             result = result.substring(19, result.length() - 1);
             System.out.println("The result of getting dates is: "+result);
             ArrayList<String> datesArray = new ArrayList<String>(Arrays.asList(result.split("/")));
@@ -294,6 +295,7 @@ public class ViewGroup extends AppCompatActivity implements AsyncTaskListener{
             System.out.println("The size of datesArray is: "+datesArray.size());
             addCustomDecorators(usersInGroup.size(), datesArray);
         }else{
+            // This call is returning all the users in the group
             result = result.substring(0, result.length() - 1);      // Remove comma from end of string
             setUpUsersInGroup(result);
         }

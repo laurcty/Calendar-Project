@@ -138,11 +138,16 @@ public class ViewCalendar extends AppCompatActivity implements AsyncTaskListener
     // This method gets called after background.java finishes
     @Override
     public void updateResult(String result){
-        if(result.contains("REMOVECALENDARDATE")) {
+        if(result.contains("CONNECTION ERROR")||result.contains("Failed to connect")){
+            Toast.makeText(ViewCalendar.this, "Error connecting to server, please try again", Toast.LENGTH_SHORT).show();
+        }else if (result.contains("REMOVECALENDARDATE")){
+            // This call is when a date has just been removed
             changeCalendar();
         }else if(result.contains("ADDCALENDARDATE")){
+            // This call is when a date has just been added
             changeCalendar();
         }else{
+            // This call is returning the dates in the user's calendar
             setUpCalendar(result);
         }
     }

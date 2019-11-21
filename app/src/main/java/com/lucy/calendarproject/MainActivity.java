@@ -68,22 +68,29 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskListener
     @Override
     public void updateResult(String result){
         if(result.contains("fgou")) {      // "fgou" (FindGroupsOfUser) means this call is returning the groups which the user belongs to
-            // Get groups of user from string into array
-            System.out.println("result of fgou is: "+result);
-            String groupIDsString = result.substring(4, result.length() - 1);
-            System.out.println("result after manipulating is: "+groupIDsString);
-            groupIDs = new ArrayList<String>(Arrays.asList(groupIDsString.split("\\s*,\\s*")));
+            if(result.contains("CONNECTION ERROR")||result.contains("Failed to connect")){
+                Toast.makeText(MainActivity.this, "Error connecting to server, please try again", Toast.LENGTH_SHORT).show();
+            }else {
+                // Get groups of user from string into array
+                System.out.println("result of fgou is: " + result);
+                String groupIDsString = result.substring(4, result.length() - 1);
+                System.out.println("result after manipulating is: " + groupIDsString);
+                groupIDs = new ArrayList<String>(Arrays.asList(groupIDsString.split("\\s*,\\s*")));
 
-            background bg2 = new background(MainActivity.this);
-            bg2.execute("groupIDs","blank",groupIDsString,"blank","getGroupNames");
+                background bg2 = new background(MainActivity.this);
+                bg2.execute("groupIDs", "blank", groupIDsString, "blank", "getGroupNames");
+            }
 
-        }else{
+        }else{      // This call is returning the groupNames of the groups the user belongs to
             System.out.println("Result of getGroupNames is:"+result);
             String groupNamesStr = result.substring(0,result.length()-1);
+            if(groupNamesStr.contains("error")){
+                groupNamesStr = null;
+            }
             System.out.println("groupNamesStr is: "+groupNamesStr);
 
-            groupNames = new ArrayList<String>(Arrays.asList(groupNamesStr.split("\\s*,\\s*")));
             try {
+                groupNames = new ArrayList<String>(Arrays.asList(groupNamesStr.split("\\s*,\\s*")));
                 displayGroups(groupNames);
             } catch (Exception e) {
                 // User doesn't have any groups yet
